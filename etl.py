@@ -32,6 +32,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import load_breast_cancer
 from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import LinearRegression
+from ucimlrepo import fetch_ucirepo 
 
 # Config dict to set the logging level
 import logging.config
@@ -73,6 +74,42 @@ def load_ins_cleaned(random_seed=42):
     X = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=random_seed)
+    X_train = copy.deepcopy(X_train).reset_index(drop=True)
+    X_test = copy.deepcopy(X_test).reset_index(drop=True)
+    y_train = y_train.reset_index(drop=True)
+    y_test = y_test.reset_index(drop=True)
+
+    return X_train, X_test, y_train, y_test
+
+def load_Boston_cleaned(random_seed=42):
+    # fetch dataset
+    column_names = ['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT', 'MEDV']
+    boston_df = pd.read_csv('datasets/housing.csv', header=None, delimiter=r"\s+", names=column_names)
+
+    X = boston_df.drop(columns=['MEDV'])
+    y = boston_df['MEDV']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+    X_train = copy.deepcopy(X_train).reset_index(drop=True)
+    X_test = copy.deepcopy(X_test).reset_index(drop=True)
+    y_train = y_train.reset_index(drop=True)
+    y_test = y_test.reset_index(drop=True)
+
+    return X_train, X_test, y_train, y_test
+
+def load_Fire_cleaned(random_seed=42):
+    # fetch dataset 
+    forest_fires = fetch_ucirepo(id=162) 
+  
+    # data (as pandas dataframes) 
+    X = forest_fires.data.features 
+    y = forest_fires.data.targets 
+
+    X['area'] = y['area']
+    y = X['area']
+    X = X.drop('area', axis=1)
+    X = X.drop('month', axis=1)
+    X = X.drop('day', axis=1)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
     X_train = copy.deepcopy(X_train).reset_index(drop=True)
     X_test = copy.deepcopy(X_test).reset_index(drop=True)
     y_train = y_train.reset_index(drop=True)
