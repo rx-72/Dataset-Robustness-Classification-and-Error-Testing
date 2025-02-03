@@ -1042,8 +1042,8 @@ def main():
     print("Grabbing Arguments...")
     print("")
     parser = argparse.ArgumentParser(description="Run robustness tests")
-    parser.add_argument('--test', choices=['discretization', 'leave_one_out'], help="Specify which test to run: (discretization, leave_one_out)")
-    parser.add_argument("--dataset", choices=["mpg", "ins"], help="Filename of the dataset in the datasets' folder")
+    parser.add_argument('--task', choices=['Pattern Mining', 'Testing', 'Normalization'], help="Task to run on terminal: 'Pattern Mining', 'Testing', 'Normalization'")
+    parser.add_argument("--dataset", choices=["mpg", "ins", "bos", "fire"], help="Filename of the dataset in the datasets' folder")
     args = parser.parse_args()
 
     # Set parameters
@@ -1080,7 +1080,7 @@ def main():
             print("Dataset is not provided, please provided dataset.")
     else:
             print("")
-            print("No test method given. Please declare type of test to run")
+            print("No task method given. Please declare type of task to run")
 
 
 if __name__ == "__main__":
