@@ -1042,8 +1042,8 @@ def main():
     print("Grabbing Arguments...")
     print("")
     parser = argparse.ArgumentParser(description="Run robustness tests")
-    parser.add_argument('--task', choices=['Pattern Mining', 'Testing', 'Normalization'], help="Task to run on terminal: 'Pattern Mining', 'Testing', 'Normalization'")
-    parser.add_argument("--dataset", choices=["mpg", "ins", "bos", "fire"], help="Filename of the dataset in the datasets' folder")
+    parser.add_argument('--task', choices=['Pattern Mining', 'Testing', 'Normalization', 'leave_one_out'], help="Task to run on terminal: 'Pattern Mining', 'Testing', 'Normalization', 'leave_one_out'")
+    parser.add_argument("--dataset", choices=["mpg", "ins", "bos", "fire"], help="Name of dataset utilized: 'mpg', 'ins', 'bos', 'fire'")
     args = parser.parse_args()
 
     # Set parameters
@@ -1051,7 +1051,7 @@ def main():
     output_dir = params["output_dir"]
     os.makedirs(output_dir, exist_ok=True)
 
-    if args.test == "leave_one_out":
+    if args.task == "leave_one_out":
         if args.dataset == "mpg":
             ratios = [0.05, 0.10, 0.15, 0.2, 0.25]
             X_train, X_test, y_train, y_test = load_mpg_cleaned(random_seed=params["random_seed"])
@@ -1059,6 +1059,14 @@ def main():
         elif args.dataset == "ins":
             ratios = [0.02, 0.04, 0.06, 0.08]
             X_train, X_test, y_train, y_test = load_ins_cleaned(random_seed=params["random_seed"])
+            run_complex_test(X_train, y_train, X_test, y_test, output_dir, args, ratios, 500, maximize=False)
+        elif args.dataset == "bos":
+            ratios = [0.05, 0.10, 0.15, 0.2, 0.25]
+            X_train, X_test, y_train, y_test = load_Boston_cleaned(random_seed=params["random_seed"])
+            run_complex_test(X_train, y_train, X_test, y_test, output_dir, args, ratios, 500, maximize=False)
+        elif args.dataset == "fire":
+            ratios = [0.05, 0.10, 0.15, 0.2, 0.25]
+            X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
             run_complex_test(X_train, y_train, X_test, y_test, output_dir, args, ratios, 500, maximize=False)
         else:
             print("")
