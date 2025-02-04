@@ -1042,7 +1042,7 @@ def main():
     print("Grabbing Arguments...")
     print("")
     parser = argparse.ArgumentParser(description="Run robustness tests")
-    parser.add_argument('--task', choices=['Pattern Mining', 'Testing', 'Normalization', 'leave_one_out'], help="Task to run on terminal: 'Pattern Mining', 'Testing', 'Normalization', 'leave_one_out'")
+    parser.add_argument('--task', choices=['Pattern_Mining', 'Pattern_Testing(Flawed)', 'Pattern_Testing(Set_Percent)', 'Normalization', 'leave_one_out'], help="Task to run on terminal: 'Pattern_Mining', 'Pattern_Testing(Flawed)', 'Testing', 'Normalization', 'leave_one_out'")
     parser.add_argument("--dataset", choices=["mpg", "ins", "bos", "fire"], help="Name of dataset utilized: 'mpg', 'ins', 'bos', 'fire'")
     args = parser.parse_args()
 
