@@ -575,14 +575,14 @@ def normalization(X_train, y_train, X_test, y_test, bins, name, r_radius, r_radi
       with tqdm(total=500, desc=f"Finding radius for {dataset_names[i]}", leave=False) as pbar:
           while robustness_ratio < 0.5:
               robustness_radius += radius_increment
-                robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
+              robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
                                                                     uncertain_num=uncertain_number,
                                                                     boundary_indices=boundary_indices,
                                                                     uncertain_radius=uncertain_radius, 
                                                                     robustness_radius=robustness_radius,
                                                                     interval=False)
-                #print(robustness_ratio)
-                pbar.update(radius_increment)
+              #print(robustness_ratio)
+              pbar.update(radius_increment)
         
         robustness_radii_10.append(robustness_radius)
 
