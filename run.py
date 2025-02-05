@@ -584,7 +584,7 @@ def normalization(X_train, y_train, X_test, y_test, bins, name, r_radius, r_radi
               #print(robustness_ratio)
               pbar.update(radius_increment)
         
-        robustness_radii_10.append(robustness_radius)
+      robustness_radii_10.append(robustness_radius)
 
     results = {}
     mean_radius = np.mean(robustness_radii_10)
