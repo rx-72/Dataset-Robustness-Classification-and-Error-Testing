@@ -604,6 +604,7 @@ def normalization(X_train, y_train, X_test, y_test, bins, name, r_radius, r_radi
 
     print("")
     print(f"So the best targeting approach or the worst case scenario in terms of error injection on the {name} dataset is {worst[0]} with a normalized robustness score of {worst[1]:.4f}")
+    print("")
     
     return results
 
