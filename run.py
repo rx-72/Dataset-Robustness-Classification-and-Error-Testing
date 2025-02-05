@@ -376,7 +376,7 @@ def normalization(X_train, y_train, X_test, y_test, bins, name, r_radius, r_radi
     return list(sampled_indices), bin_edges
 
   best_feature = select_best_feature(X_train, y_train)
-  lr = LinearRegression()
+  lr = LinearRegression
   X_train, X_test, y_train, y_test = X_train.reset_index(drop=True) , X_test.reset_index(drop=True) , y_train.reset_index(drop=True) , y_test.reset_index(drop=True)
   boundary_indices = leave_one_out(X_train, y_train, X_test, y_test, lr, mae, maximize=False)
 
@@ -405,7 +405,7 @@ def normalization(X_train, y_train, X_test, y_test, bins, name, r_radius, r_radi
   print("")
   print("Running tests on histogram method with Linear Regression, Mean Squared Error...")
   
-  lr = LinearRegression()
+  lr = LinearRegression
   X_train, X_test, y_train, y_test = X_train.reset_index(drop=True) , X_test.reset_index(drop=True) , y_train.reset_index(drop=True) , y_test.reset_index(drop=True)
   boundary_indices = leave_one_out(X_train, y_train, X_test, y_test, lr, mse, maximize=False)
 
@@ -431,7 +431,7 @@ def normalization(X_train, y_train, X_test, y_test, bins, name, r_radius, r_radi
   print("")
   print("Running tests on histogram method with RandomForest Regressor, Mean Absolute Error...")
 
-  rf = RandomForestRegressor()
+  rf = RandomForestRegressor
   X_train, X_test, y_train, y_test = X_train.reset_index(drop=True) , X_test.reset_index(drop=True) , y_train.reset_index(drop=True) , y_test.reset_index(drop=True)
   boundary_indices = leave_one_out(X_train, y_train, X_test, y_test, rf, mae, maximize=False)
 
@@ -457,7 +457,7 @@ def normalization(X_train, y_train, X_test, y_test, bins, name, r_radius, r_radi
   print("")
   print("Running tests on histogram method with RandomForest Regressor, Mean Squared Error...")
   
-  rf = RandomForestRegressor()
+  rf = RandomForestRegressor
   X_train, X_test, y_train, y_test = X_train.reset_index(drop=True) , X_test.reset_index(drop=True) , y_train.reset_index(drop=True) , y_test.reset_index(drop=True)  
   boundary_indices = leave_one_out(X_train, y_train, X_test, y_test, rf, mse, maximize=False)
 
