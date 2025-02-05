@@ -188,10 +188,10 @@ def normalization_all(X_train_ins, X_test_ins, y_train_ins, y_test_ins, X_train_
   dataset_dct["FIRE"] = [X_train_fire, X_test_fire, y_train_fire, y_test_fire]
 
   def robustness_score_normalization(uncertain_numbers, uncertain_radii, dataset_sizes, boundary_indices_lst, dataset_names, dataset_dct):
-    robustness_radii_10 = [] #find robustness radius that grants radii robustness ratio of 0.10 or more 
+      robustness_radii_10 = [] #find robustness radius that grants radii robustness ratio of 0.10 or more 
                              #(alt. use 0.5 instead {depending on closeness, this ratio may need to be larger})
 
-    for i in range(0, len(dataset_names)):
+      for i in range(0, len(dataset_names)):
         uncertain_number = uncertain_numbers[i]
         uncertain_radius = uncertain_radii[i]
         boundary_indices = boundary_indices_lst[i]
@@ -231,14 +231,14 @@ def normalization_all(X_train_ins, X_test_ins, y_train_ins, y_test_ins, X_train_
         #robustness_radii_10.append(robustness_radius)
         robustness_radii_10.append(robustness_radius/np.std(y_test))
 
-    results = {}
+      results = {}
 
-    mean_radius = np.mean(robustness_radii_10)
-    std_radius = np.std(robustness_radii_10)
+      mean_radius = np.mean(robustness_radii_10)
+      std_radius = np.std(robustness_radii_10)
     
-    max_radii = max(robustness_radii_10)
-    min_radii = min(robustness_radii_10)
-    for i, dataset_name in enumerate(dataset_names):
+      max_radii = max(robustness_radii_10)
+      min_radii = min(robustness_radii_10)
+      for i, dataset_name in enumerate(dataset_names):
         normalized_radius = 1 - ((robustness_radii_10[i] - mean_radius) / (std_radius + 1e-8))  # Prevent division by zero
         #normalized_size = (dataset_sizes[i]/max(dataset_sizes))
         #robustness_score = 0.5*normalized_radius + 0.5*normalized_size    
@@ -246,22 +246,21 @@ def normalization_all(X_train_ins, X_test_ins, y_train_ins, y_test_ins, X_train_
         #print(f"Normalized robustness score for {dataset_name} dataset is {robustness_score:.4f}")
         results[dataset_name] = robustness_score
 
-    items = list(sorted(results.items(), key=lambda x: x[1]))
+      items = list(sorted(results.items(), key=lambda x: x[1]))
         
-    for item in items:
+      for item in items:
         print(f"Normalized robustness score for {item[0]} dataset is {item[1]:.4f}")
 
-    worst = items[0]
-    best = items[-1]
+      worst = items[0]
+      best = items[-1]
     
-    print("")
-    print("Thus we know the following:")
-    print(f"The least robust dataset w/ repsect to assigned task is {worst[0]} with a normalized robustness score of {worst[1]:.4f}")
-    print(f"The most robust dataset w/ repsect to assigned task is {best[0]} with a normalized robustness score of {best[1]:.4f}")
+      print("")
+      print("Thus we know the following:")
+      print(f"The least robust dataset w/ repsect to assigned task is {worst[0]} with a normalized robustness score of {worst[1]:.4f}")
+      print(f"The most robust dataset w/ repsect to assigned task is {best[0]} with a normalized robustness score of {best[1]:.4f}")
     
-    return results
-
-result = robustness_score_normalization(uncertain_numbers, uncertain_radii, dataset_sizes, boundary_indices_lst, dataset_names, dataset_dct)
+      return results
+  result = robustness_score_normalization(uncertain_numbers, uncertain_radii, dataset_sizes, boundary_indices_lst, dataset_names, dataset_dct)
 
 def normalization(X_train, y_train, X_test, y_test, bins, name, r_radius, r_radius_increment, columns_2_bin, number_bins, p1, p2, p3):
 
