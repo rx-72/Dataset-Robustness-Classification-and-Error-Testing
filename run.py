@@ -264,7 +264,7 @@ def normalization_all(X_train_ins, X_test_ins, y_train_ins, y_test_ins, X_train_
 
 def normalization(X_train, y_train, X_test, y_test, bins, name, r_radius, r_radius_increment, columns_2_bin, number_bins, p1, p2, p3):
 
-  Print("Getting things started...")
+  print("Getting things started...")
   def get_positive_paths(tree, feature_names, node=0, depth=0, conditions=None, results=None, min_positive_ratio=0.5):
     if conditions is None:
         conditions = {}
@@ -393,8 +393,8 @@ def normalization(X_train, y_train, X_test, y_test, bins, name, r_radius, r_radi
 
   feature_max_values = X_train.max()
 
-  Print("")
-  Print("Running tests on histogram method with Linear Regression, Mean Absolute Error...")
+  print("")
+  print("Running tests on histogram method with Linear Regression, Mean Absolute Error...")
   
   tree = clf.tree_
   feature_names = X_train.columns
@@ -402,8 +402,8 @@ def normalization(X_train, y_train, X_test, y_test, bins, name, r_radius, r_radi
   thresholds = [thres[best_feature] for thres in best_thresholds if best_feature in thres]
   boundary_indices_lr_mae, bin_edges = discretize_and_sample(X_train, best_feature, thresholds, total_samples=int(0.1 * len(X_train)), num_bins=bins[0])
 
-  Print("")
-  Print("Running tests on histogram method with Linear Regression, Mean Squared Error...")
+  print("")
+  print("Running tests on histogram method with Linear Regression, Mean Squared Error...")
   
   lr = LinearRegression()
   X_train, X_test, y_train, y_test = X_train.reset_index(drop=True) , X_test.reset_index(drop=True) , y_train.reset_index(drop=True) , y_test.reset_index(drop=True)
@@ -428,8 +428,8 @@ def normalization(X_train, y_train, X_test, y_test, bins, name, r_radius, r_radi
   thresholds = [thres[best_feature] for thres in best_thresholds if best_feature in thres]
   boundary_indices_lr_mse, bin_edges = discretize_and_sample(X_train, best_feature, thresholds, total_samples=int(0.1 * len(X_train)), num_bins=bins[1])
 
-  Print("")
-  Print("Running tests on histogram method with RandomForest Regressor, Mean Absolute Error...")
+  print("")
+  print("Running tests on histogram method with RandomForest Regressor, Mean Absolute Error...")
 
   rf = RandomForestRegressor()
   X_train, X_test, y_train, y_test = X_train.reset_index(drop=True) , X_test.reset_index(drop=True) , y_train.reset_index(drop=True) , y_test.reset_index(drop=True)
@@ -454,8 +454,8 @@ def normalization(X_train, y_train, X_test, y_test, bins, name, r_radius, r_radi
   thresholds = [thres[best_feature] for thres in best_thresholds if best_feature in thres]
   boundary_indices_rf_mae, bin_edges = discretize_and_sample(X_train, best_feature, thresholds, total_samples=int(0.1 * len(X_train)), num_bins=bins[2])
 
-  Print("")
-  Print("Running tests on histogram method with RandomForest Regressor, Mean Squared Error...")
+  print("")
+  print("Running tests on histogram method with RandomForest Regressor, Mean Squared Error...")
   
   rf = RandomForestRegressor()
   X_train, X_test, y_train, y_test = X_train.reset_index(drop=True) , X_test.reset_index(drop=True) , y_train.reset_index(drop=True) , y_test.reset_index(drop=True)  
@@ -1059,7 +1059,7 @@ def main():
             pattern3 = ((0, 1, 2), (63.0, 4, 4.0), ('<', '<', '<'))
             normalization(X_train, y_train, X_test, y_test, bin_numbers, "INS", 1, 100, columns_to_bin, num_bins, pattern1, pattern2, pattern3)
         elif args.dataset == "bos":
-            bin_numbers = [1, 1, 1, 1] #fix
+            bin_numbers = [7, 7, 22, 7] #fix
             X_train, X_test, y_train, y_test = load_Boston_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['CRIM', 'INDUS', 'NOX', 'RM', 'AGE', 'DIS', 'B', 'LSTAT']
             num_bins = {'CRIM': int(np.sqrt(402)), 'INDUS': int(np.sqrt(72)), 'NOX': int(np.sqrt(76)), 'RM': int(np.sqrt(366)), 'AGE': int(np.sqrt(302)), 'DIS': int(np.sqrt(339)), 'B': int(np.sqrt(287)), 'LSTAT': int(np.sqrt(366))}
@@ -1068,7 +1068,7 @@ def main():
             pattern3 = ((9, 12), (398.0, 6), ('>', '<'))
             normalization(X_train, y_train, X_test, y_test, bin_numbers, "Boston", 2, 0.01, columns_to_bin, num_bins, pattern1, pattern2, pattern3)
         elif args.dataset == "fire":
-            bin_numbers = [1, 1, 1, 1] #fix
+            bin_numbers = [9, 9, 5, 9] #fix
             X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH']
             num_bins = {'FFMC': int(np.sqrt(103)), 'DMC': int(np.sqrt(199)), 'DC': int(np.sqrt(199)), 'ISI': int(np.sqrt(112)), 'temp': int(np.sqrt(183)), 'RH': int(np.sqrt(73))}
