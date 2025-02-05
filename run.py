@@ -1030,11 +1030,11 @@ def main():
         elif args.dataset == "bos":
             ratios = [0.05, 0.10, 0.15, 0.2, 0.25]
             X_train, X_test, y_train, y_test = load_Boston_cleaned(random_seed=params["random_seed"])
-            run_complex_test(X_train, y_train, X_test, y_test, output_dir, args, ratios, 500, maximize=False)
+            run_complex_test(X_train, y_train, X_test, y_test, output_dir, args, ratios, 2, maximize=False)
         elif args.dataset == "fire":
             ratios = [0.05, 0.10, 0.15, 0.2, 0.25]
             X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
-            run_complex_test(X_train, y_train, X_test, y_test, output_dir, args, ratios, 500, maximize=False)
+            run_complex_test(X_train, y_train, X_test, y_test, output_dir, args, ratios, 50, maximize=False)
         else:
             print("")
             print("Dataset is not provided, please provide dataset.")
