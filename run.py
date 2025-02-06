@@ -20,6 +20,349 @@ with open("data-params.json", "r") as f:
 METRICS = {
     "accuracy": accuracy
 }
+def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bins, ratios, p1, p2, p3, rr):
+  X_train_transformed = X_train.copy()
+  X_test_transformed = X_test.copy()
+
+  columns_to_bin = column_2_bins
+  n_bins = num_bins
+  column_bins = {}
+
+  for col in columns_to_bin:
+    # Apply binning (equal-width bins in this example)
+    X_train_transformed[col], bins = pd.cut(
+        X_train[col], 
+        bins=n_bins[col], 
+        labels=False, 
+        retbins=True
+    )
+
+    X_test_transformed[col] = pd.cut(
+        X_test[col],
+        bins=bins,      # Use the same bins from X_train
+        labels=False,   # Keep consistent labels
+        include_lowest=True  # Ensure the lowest bin includes its boundary
+    )
+
+    X_train_transformed[col] = X_train_transformed[col].fillna(-1).astype(int)
+    X_test_transformed[col] = X_test_transformed[col].fillna(-1).astype(int)
+
+    column_bins[col] = bins
+
+  def get_complex_candidate_target_indices(df, candidate):
+    columns, values, conditions = candidate
+    mask = pd.Series(True, index=df.index)  # Start with a mask that selects all rows
+
+    for col, val, cond in zip(columns, values, conditions):
+        if cond == "<":
+            mask &= df.iloc[:, col] < val
+        elif cond == "=":
+            mask &= df.iloc[:, col] == val
+        elif cond == ">":
+            mask &= df.iloc[:, col] > val
+        else:
+            raise ValueError(f"Unsupported condition: {cond}")
+
+    return df[mask].index.tolist()
+
+  pattern1 = p1
+  pattern2 = p2
+  pattern3 = p3
+
+  target_indices_of_pattern1 = get_complex_candidate_target_indices(X_train_transformed, pattern1)
+  target_indices_of_pattern2 = get_complex_candidate_target_indices(X_train_transformed, pattern2)
+  target_indices_of_pattern3 = get_complex_candidate_target_indices(X_train_transformed, pattern3)
+
+  # pattern1_testing (Meyer)
+  robustness_dicts_interval_pattern1 = []
+  for seed in range(1):
+    # mpg +- 2 is robust
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+    ratios = ratios
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pcts = list(np.arange(1, 11)/100)
+    robustness_dict_interval = dict()
+    robustness_dict_interval['uncertain_radius'] = uncertain_radiuses
+    robustness_dict_interval['uncertain_radius_ratios'] = ratios
+    for uncertain_pct in tqdm(uncertain_pcts, desc='Progess'):
+        robustness_dict_interval[uncertain_pct] = list()
+        uncertain_num = int(uncertain_pct*len(y_train))
+        for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius'):
+            robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num,
+                                                                    boundary_indices=target_indices_of_pattern1,
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=True, seed=seed)
+            robustness_dict_interval[uncertain_pct].append(robustness_ratio)
+    robustness_dicts_interval_pattern1.append(robustness_dict_interval)
+
+  # pattern1_testing (Zorro)
+  robustness_dicts_pattern1 = []
+  for seed in range(1):
+    # mpg +- 2 is robust
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+    ratios = ratios
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pcts = list(np.arange(1, 11)/100)
+    robustness_dict = dict()
+    robustness_dict['uncertain_radius'] = uncertain_radiuses
+    robustness_dict['uncertain_radius_ratios'] = ratios
+    for uncertain_pct in tqdm(uncertain_pcts, desc='Progess'):
+        robustness_dict[uncertain_pct] = list()
+        uncertain_num = int(uncertain_pct*len(y_train))
+        for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius'):
+            #print(uncertain_radius)
+            robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num,
+                                                                    boundary_indices=target_indices_of_pattern1,
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=False, seed=seed)
+            robustness_dict[uncertain_pct].append(robustness_ratio)
+    robustness_dicts_pattern1.append(robustness_dict)
+
+  # pattern2_testing (Meyer)
+  robustness_dicts_interval_pattern2 = []
+  for seed in range(1):
+    # mpg +- 2 is robust
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+    ratios = ratios
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pcts = list(np.arange(1, 11)/100)
+    robustness_dict_interval = dict()
+    robustness_dict_interval['uncertain_radius'] = uncertain_radiuses
+    robustness_dict_interval['uncertain_radius_ratios'] = ratios
+    for uncertain_pct in tqdm(uncertain_pcts, desc='Progess'):
+        robustness_dict_interval[uncertain_pct] = list()
+        uncertain_num = int(uncertain_pct*len(y_train))
+        for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius'):
+            robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num,
+                                                                    boundary_indices=target_indices_of_pattern2,
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=True, seed=seed)
+            robustness_dict_interval[uncertain_pct].append(robustness_ratio)
+    robustness_dicts_interval_pattern2.append(robustness_dict_interval)
+
+  
+  # pattern2_testing (Zorro)
+  robustness_dicts_pattern2 = []
+  for seed in range(1):
+    # mpg +- 2 is robust
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+    ratios = ratios
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pcts = list(np.arange(1, 11)/100)
+    robustness_dict = dict()
+    robustness_dict['uncertain_radius'] = uncertain_radiuses
+    robustness_dict['uncertain_radius_ratios'] = ratios
+    for uncertain_pct in tqdm(uncertain_pcts, desc='Progess'):
+        robustness_dict[uncertain_pct] = list()
+        uncertain_num = int(uncertain_pct*len(y_train))
+        for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius'):
+            #print(uncertain_radius)
+            robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num,
+                                                                    boundary_indices=target_indices_of_pattern2,
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=False, seed=seed)
+            robustness_dict[uncertain_pct].append(robustness_ratio)
+    robustness_dicts_pattern2.append(robustness_dict)
+
+  # pattern3_testing (Meyer)
+  robustness_dicts_interval_pattern3 = []
+  for seed in range(1):
+    # mpg +- 2 is robust
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+    ratios = ratios
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pcts = list(np.arange(1, 11)/100)
+    robustness_dict_interval = dict()
+    robustness_dict_interval['uncertain_radius'] = uncertain_radiuses
+    robustness_dict_interval['uncertain_radius_ratios'] = ratios
+    for uncertain_pct in tqdm(uncertain_pcts, desc='Progess'):
+        robustness_dict_interval[uncertain_pct] = list()
+        uncertain_num = int(uncertain_pct*len(y_train))
+        for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius'):
+            robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num,
+                                                                    boundary_indices=target_indices_of_pattern3,
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=True, seed=seed)
+            robustness_dict_interval[uncertain_pct].append(robustness_ratio)
+    robustness_dicts_interval_pattern3.append(robustness_dict_interval)
+
+  # pattern3_testing (Zorro)
+  robustness_dicts_pattern3 = []
+  for seed in range(1):
+    # mpg +- 2 is robust
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+    ratios = ratios
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pcts = list(np.arange(1, 11)/100)
+    robustness_dict = dict()
+    robustness_dict['uncertain_radius'] = uncertain_radiuses
+    robustness_dict['uncertain_radius_ratios'] = ratios
+    for uncertain_pct in tqdm(uncertain_pcts, desc='Progess'):
+        robustness_dict[uncertain_pct] = list()
+        uncertain_num = int(uncertain_pct*len(y_train))
+        for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius'):
+            #print(uncertain_radius)
+            robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num,
+                                                                    boundary_indices=target_indices_of_pattern3,
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=False, seed=seed)
+            robustness_dict[uncertain_pct].append(robustness_ratio)
+    robustness_dicts_pattern3.append(robustness_dict)
+
+  robustness_dicts_naive = []
+  for seed in tqdm(range(5), desc=f'Progress'):
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+    ratios = ratios
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pcts = list(np.arange(1, 11)/100)
+    robustness_dict = dict()
+    robustness_dict['uncertain_radius'] = uncertain_radiuses
+    robustness_dict['uncertain_radius_ratios'] = ratios
+    for uncertain_pct in tqdm(uncertain_pcts, desc=f'Rep {seed+1}', leave=False):
+        robustness_dict[uncertain_pct] = list()
+        uncertain_num = int(uncertain_pct*len(y_train))
+        for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius', leave=False):
+            robustness_ratio = compute_robustness_ratio_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num, 
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=False, seed=seed)
+            robustness_dict[uncertain_pct].append(robustness_ratio)
+    robustness_dicts_naive.append(robustness_dict)
+
+  robustness_dicts_interval_naive = []
+  for seed in tqdm(range(5), desc=f'Progress'):
+    # mpg +- 2 is robust
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+    ratios = ratios
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pcts = list(np.arange(1, 11)/100)
+    robustness_dict_interval = dict()
+    robustness_dict_interval['uncertain_radius'] = uncertain_radiuses
+    robustness_dict_interval['uncertain_radius_ratios'] = ratios
+    for uncertain_pct in tqdm(uncertain_pcts, desc=f'Rep {seed+1}', leave=False):
+        robustness_dict_interval[uncertain_pct] = list()
+        uncertain_num = int(uncertain_pct*len(y_train))
+        for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius', leave=False):
+            robustness_ratio = compute_robustness_ratio_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num, 
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=True, seed=seed)
+            robustness_dict_interval[uncertain_pct].append(robustness_ratio)
+    robustness_dicts_interval_naive.append(robustness_dict_interval)
+
+  # Create the heatmap plot with a 2x2 grid
+  fig, axes = plt.subplots(4, 2, figsize=(15, 18), dpi=200)
+
+  # Define colormap
+  cmap = plt.get_cmap("autumn_r")
+
+  # Function to plot a single heatmap
+  def plot_heatmap(ax, heatmap_data, x_labels, y_labels, title):
+    heatmap = ax.imshow(heatmap_data, cmap=cmap, interpolation='nearest', 
+                        aspect='auto', alpha=0.8, vmin=0, vmax=100)
+    ax.set_xticks(np.arange(len(x_labels)))
+    ax.set_yticks(np.arange(len(y_labels)))
+    ax.set_xticklabels(x_labels)
+    ax.set_yticklabels(y_labels)
+    ax.tick_params(axis='both', which='both', length=0)  # Remove tick marks
+    
+    # Add white lines by adjusting the linewidth for minor ticks
+    ax.set_xticks(np.arange(len(x_labels)) - 0.5, minor=True)
+    ax.set_yticks(np.arange(len(y_labels)) - 0.5, minor=True)
+    ax.grid(which="minor", color="white", linestyle='-', linewidth=0.5)
+    ax.tick_params(which="minor", size=0)
+    
+    # Remove external boundaries
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+
+    # Add text annotations
+    for i in range(len(y_labels)):
+        for j in range(len(x_labels)):
+            if heatmap_data[i][j] == 100:
+                text = ax.text(j, i, '100', ha='center', va='center', color='black')
+            elif heatmap_data[i][j] == 0:
+                text = ax.text(j, i, '0', ha='center', va='center', color='black')
+            else:
+                text = ax.text(j, i, f'{heatmap_data[i][j]:.1f}', ha='center', va='center', color='black')
+
+    ax.set_title(title, fontsize=12)
+    ax.set_xlabel('Percentage of Uncertain Data', fontsize=12)
+    ax.set_ylabel('Uncertain Radius (%)', fontsize=12)
+
+  # Data for the heatmaps
+
+  #naive
+  df1 = sum([pd.DataFrame(robustness_dicts_interval_naive[i]).iloc[:, 2:] for i in range(5)])/5
+  df2 = sum([pd.DataFrame(robustness_dicts_naive[i]).iloc[:, 2:] for i in range(5)])/5
+
+  #pattern1
+  df3 = sum([pd.DataFrame(robustness_dicts_interval_pattern1[i]).iloc[:, 2:] for i in range(1)])/1  
+  df4 = sum([pd.DataFrame(robustness_dicts_pattern1[i]).iloc[:, 2:] for i in range(1)])/1
+
+  #pattern2
+  df5 = sum([pd.DataFrame(robustness_dicts_interval_pattern2[i]).iloc[:, 2:] for i in range(1)])/1
+  df6 = sum([pd.DataFrame(robustness_dicts_pattern2[i]).iloc[:, 2:] for i in range(1)])/1
+
+  #pattern3
+  df7 = sum([pd.DataFrame(robustness_dicts_interval_pattern3[i]).iloc[:, 2:] for i in range(1)])/1
+  df8 = sum([pd.DataFrame(robustness_dicts_pattern3[i]).iloc[:, 2:] for i in range(1)])/1
+
+
+  # Convert fractions to percentages
+  heatmap_data1 = df1.multiply(100).values
+  heatmap_data2 = df2.multiply(100).values
+  heatmap_data3 = df3.multiply(100).values
+  heatmap_data4 = df4.multiply(100).values
+  heatmap_data5 = df5.multiply(100).values
+  heatmap_data6 = df6.multiply(100).values
+  heatmap_data7 = df7.multiply(100).values
+  heatmap_data8 = df8.multiply(100).values
+
+
+  # Labels
+  x_labels = df1.columns.tolist()
+  y_labels = [0.05, 0.10, 0.15, 0.2, 0.25]
+
+  # Plot each heatmap
+  plot_heatmap(axes[0, 0], heatmap_data1, x_labels, y_labels, 'Meyer et al. (Naive Approach)')
+  plot_heatmap(axes[0, 1], heatmap_data2, x_labels, y_labels, 'ZORRO (Naive Approach)')
+  plot_heatmap(axes[1, 0], heatmap_data3, x_labels, y_labels, 'Meyer et al. (Pattern 1)')
+  plot_heatmap(axes[1, 1], heatmap_data4, x_labels, y_labels, 'ZORRO (Pattern 1)')
+  plot_heatmap(axes[2, 0], heatmap_data5, x_labels, y_labels, 'Meyer et al. (Pattern 2)')
+  plot_heatmap(axes[2, 1], heatmap_data6, x_labels, y_labels, 'ZORRO (Pattern 2)')
+  plot_heatmap(axes[3, 0], heatmap_data7, x_labels, y_labels, 'Meyer et al. (Pattern 3)')
+  plot_heatmap(axes[3, 1], heatmap_data8, x_labels, y_labels, 'ZORRO (Pattern 3)')
+
+
+  # Adjust layout and add colorbar
+  plt.subplots_adjust(wspace=0.2, hspace=0.6, bottom=0.1, left=0.1, right=0.9)
+  cb = fig.colorbar(axes[0, 1].images[0], ax=axes, orientation='vertical', pad=0.02)
+  cb.set_label('Robustness Ratio (%)', fontsize=12)
+  plt.savefig(f'{output_dir}/Pattern_testing_{args.dataset}.pdf', bbox_inches='tight')
+
 def normalization_all(X_train_ins, X_test_ins, y_train_ins, y_test_ins, X_train_mpg, X_test_mpg, y_train_mpg, y_test_mpg, X_train_bos, X_test_bos, y_train_bos, y_test_bos, X_train_fire, X_test_fire, y_train_fire, y_test_fire):
   print("Getting things started...")
   X_train_transformed = X_train_ins.copy()
@@ -1083,6 +1426,46 @@ def main():
             X_train_bos, X_test_bos, y_train_bos, y_test_bos = load_Boston_cleaned(random_seed=params["random_seed"])
             X_train_fire, X_test_fire, y_train_fire, y_test_fire = load_Fire_cleaned(random_seed=params["random_seed"])
             normalization_all(X_train_ins, X_test_ins, y_train_ins, y_test_ins, X_train_mpg, X_test_mpg, y_train_mpg, y_test_mpg, X_train_bos, X_test_bos, y_train_bos, y_test_bos, X_train_fire, X_test_fire, y_train_fire, y_test_fire)
+        else:
+            print("")
+            print("Dataset is not provided, please provided dataset.")
+    elif args.task == "Pattern_Testing(Flawed)":
+        if args.dataset == "mpg":
+            ratios = [0.05, 0.10, 0.15, 0.2, 0.25]
+            X_train, X_test, y_train, y_test = load_mpg_cleaned(random_seed=params["random_seed"])
+            columns_to_bin = ['displacement', 'horsepower', 'weight', 'acceleration']
+            num_bins = {'displacement': int(np.sqrt(72)), 'horsepower': int(np.sqrt(87)), 'weight': int(np.sqrt(288)), 'acceleration': int(np.sqrt(86))}
+            pattern1 =  ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<'))
+            pattern2 = ((1, 2, 4), (6, 5, 3), ('<', '<', '<'))
+            pattern3 = ((3, 4, 5), (11, 3, 72.0), ('<', '<', '>'))
+            pattern_testing_heat(X_train, X_test, y_train, y_test, column_to_bins, num_bins, ratios, pattern1, pattern2, pattern3, 2)
+        elif args.dataset == "ins":
+            ratios = [0.02, 0.04, 0.06, 0.08]
+            X_train, X_test, y_train, y_test = load_ins_cleaned(random_seed=params["random_seed"])
+            columns_to_bin = ['bmi']
+            num_bins = {'bmi': int(np.sqrt(496))}
+            pattern1 =  ((0, 1, 2), (64.0, 4, 4.0), ('<', '<', '<'))
+            pattern2 = ((0, 1, 2), (51.0, 0, 0.0), ('>', '>', '>'))
+            pattern3 = ((0, 1, 2), (63.0, 4, 4.0), ('<', '<', '<'))
+            pattern_testing_heat(X_train, X_test, y_train, y_test, column_to_bins, num_bins, ratios, pattern1, pattern2, pattern3, 500)
+        elif args.dataset == "bos":
+            ratios = [0.05, 0.10, 0.15, 0.2, 0.25]
+            X_train, X_test, y_train, y_test = load_Boston_cleaned(random_seed=params["random_seed"])
+            columns_to_bin = ['CRIM', 'INDUS', 'NOX', 'RM', 'AGE', 'DIS', 'B', 'LSTAT']
+            num_bins = {'CRIM': int(np.sqrt(402)), 'INDUS': int(np.sqrt(72)), 'NOX': int(np.sqrt(76)), 'RM': int(np.sqrt(366)), 'AGE': int(np.sqrt(302)), 'DIS': int(np.sqrt(339)), 'B': int(np.sqrt(287)), 'LSTAT': int(np.sqrt(366))}
+            pattern1 =  ((5, 10), (10, 17.9), ('>', '>'))
+            pattern2 = ((7, 12), (3, 5), ('<', '<'))
+            pattern3 = ((9, 12), (398.0, 6), ('>', '<'))
+            pattern_testing_heat(X_train, X_test, y_train, y_test, column_to_bins, num_bins, ratios, pattern1, pattern2, pattern3, 2)
+        elif args.dataset == "fire":
+            ratios = [0.05, 0.10, 0.15, 0.2, 0.25]
+            X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
+            columns_to_bin = ['FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH']
+            num_bins = {'FFMC': int(np.sqrt(103)), 'DMC': int(np.sqrt(199)), 'DC': int(np.sqrt(199)), 'ISI': int(np.sqrt(112)), 'temp': int(np.sqrt(183)), 'RH': int(np.sqrt(73))}
+            pattern1 =  ((6, 7), (0, 4), ('>', '>'))
+            pattern2 = ((6, 7), (5, 0), ('=', '>'))
+            pattern3 = ((4, 8), (0, 5.8), ('>', '>'))
+            pattern_testing_heat(X_train, X_test, y_train, y_test, column_to_bins, num_bins, ratios, pattern1, pattern2, pattern3, 50)
         else:
             print("")
             print("Dataset is not provided, please provided dataset.")
