@@ -20,7 +20,7 @@ with open("data-params.json", "r") as f:
 METRICS = {
     "accuracy": accuracy
 }
-def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bins, ratios, p1, p2, p3, rr):
+def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bins, ratios, p1, p2, p3, rr, output_dir):
   X_train_transformed = X_train.copy()
   X_test_transformed = X_test.copy()
 
@@ -1440,7 +1440,7 @@ def main():
             pattern1 =  ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<'))
             pattern2 = ((1, 2, 4), (6, 5, 3), ('<', '<', '<'))
             pattern3 = ((3, 4, 5), (11, 3, 72.0), ('<', '<', '>'))
-            pattern_testing_heat(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2)
+            pattern_testing_heat(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2, output_dir)
         elif args.dataset == "ins":
             ratios = [0.02, 0.04, 0.06, 0.08]
             X_train, X_test, y_train, y_test = load_ins_cleaned(random_seed=params["random_seed"])
@@ -1449,7 +1449,7 @@ def main():
             pattern1 =  ((0, 1, 2), (64.0, 4, 4.0), ('<', '<', '<'))
             pattern2 = ((0, 1, 2), (51.0, 0, 0.0), ('>', '>', '>'))
             pattern3 = ((0, 1, 2), (63.0, 4, 4.0), ('<', '<', '<'))
-            pattern_testing_heat(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 500)
+            pattern_testing_heat(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 500, output_dir)
         elif args.dataset == "bos":
             ratios = [0.05, 0.10, 0.15, 0.2, 0.25]
             X_train, X_test, y_train, y_test = load_Boston_cleaned(random_seed=params["random_seed"])
@@ -1458,7 +1458,7 @@ def main():
             pattern1 =  ((5, 10), (10, 17.9), ('>', '>'))
             pattern2 = ((7, 12), (3, 5), ('<', '<'))
             pattern3 = ((9, 12), (398.0, 6), ('>', '<'))
-            pattern_testing_heat(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2)
+            pattern_testing_heat(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2, output_dir)
         elif args.dataset == "fire":
             ratios = [0.05, 0.10, 0.15, 0.2, 0.25]
             X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
@@ -1467,7 +1467,7 @@ def main():
             pattern1 =  ((6, 7), (0, 4), ('>', '>'))
             pattern2 = ((6, 7), (5, 0), ('=', '>'))
             pattern3 = ((4, 8), (0, 5.8), ('>', '>'))
-            pattern_testing_heat(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 50)
+            pattern_testing_heat(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 50, output_dir)
         else:
             print("")
             print("Dataset is not provided, please provided dataset.")
