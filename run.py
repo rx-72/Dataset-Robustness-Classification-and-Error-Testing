@@ -73,7 +73,7 @@ def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bi
   target_indices_of_pattern2 = get_complex_candidate_target_indices(X_train_transformed, pattern2)
   target_indices_of_pattern3 = get_complex_candidate_target_indices(X_train_transformed, pattern3)
 
-  # pattern1_testing (Meyer)
+  print("pattern1_testing (Meyer)")
   robustness_dicts_interval_pattern1 = []
   for seed in range(1):
     # mpg +- 2 is robust
@@ -98,7 +98,7 @@ def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bi
             robustness_dict_interval[uncertain_pct].append(robustness_ratio)
     robustness_dicts_interval_pattern1.append(robustness_dict_interval)
 
-  # pattern1_testing (Zorro)
+  print("pattern1_testing (Zorro)")
   robustness_dicts_pattern1 = []
   for seed in range(1):
     # mpg +- 2 is robust
@@ -124,7 +124,7 @@ def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bi
             robustness_dict[uncertain_pct].append(robustness_ratio)
     robustness_dicts_pattern1.append(robustness_dict)
 
-  # pattern2_testing (Meyer)
+  print("pattern2_testing (Meyer)")
   robustness_dicts_interval_pattern2 = []
   for seed in range(1):
     # mpg +- 2 is robust
@@ -150,7 +150,7 @@ def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bi
     robustness_dicts_interval_pattern2.append(robustness_dict_interval)
 
   
-  # pattern2_testing (Zorro)
+  print("pattern2_testing (Zorro)")
   robustness_dicts_pattern2 = []
   for seed in range(1):
     # mpg +- 2 is robust
@@ -176,7 +176,7 @@ def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bi
             robustness_dict[uncertain_pct].append(robustness_ratio)
     robustness_dicts_pattern2.append(robustness_dict)
 
-  # pattern3_testing (Meyer)
+  print("pattern3_testing (Meyer)")
   robustness_dicts_interval_pattern3 = []
   for seed in range(1):
     # mpg +- 2 is robust
@@ -201,7 +201,7 @@ def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bi
             robustness_dict_interval[uncertain_pct].append(robustness_ratio)
     robustness_dicts_interval_pattern3.append(robustness_dict_interval)
 
-  # pattern3_testing (Zorro)
+  print("pattern3_testing (Zorro)")
   robustness_dicts_pattern3 = []
   for seed in range(1):
     # mpg +- 2 is robust
@@ -227,6 +227,7 @@ def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bi
             robustness_dict[uncertain_pct].append(robustness_ratio)
     robustness_dicts_pattern3.append(robustness_dict)
 
+  print("Naive tests")
   robustness_dicts_naive = []
   for seed in tqdm(range(5), desc=f'Progress'):
     robustness_radius = rr
@@ -249,6 +250,7 @@ def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bi
             robustness_dict[uncertain_pct].append(robustness_ratio)
     robustness_dicts_naive.append(robustness_dict)
 
+  print("Naive tests (meyer)")
   robustness_dicts_interval_naive = []
   for seed in tqdm(range(5), desc=f'Progress'):
     # mpg +- 2 is robust
