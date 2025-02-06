@@ -1352,7 +1352,7 @@ def main():
     print("Grabbing Arguments...")
     print("")
     parser = argparse.ArgumentParser(description="Run robustness tests")
-    parser.add_argument('--task', choices=['Pattern_Mining', 'Pattern_Testing(Flawed)', 'Pattern_Testing(Set_Percent)', 'Normalization', 'leave_one_out'], help="Task to run on terminal: 'Pattern_Mining', 'Pattern_Testing(Flawed)', 'Testing', 'Normalization', 'leave_one_out'")
+    parser.add_argument('--task', choices=['Pattern_Mining', 'Pattern_Testing_Flawed', 'Pattern_Testing_Set_Percent', 'Normalization', 'leave_one_out'], help="Task to run on terminal: 'Pattern_Mining', 'Pattern_Testing_Flawed', 'Pattern_Testing_Set_Percent', 'Normalization', 'leave_one_out'")
     parser.add_argument("--dataset", choices=["mpg", "ins", "bos", "fire", "all"], help="Name of dataset utilized: 'mpg', 'ins', 'bos', 'fire', 'all'")
     args = parser.parse_args()
 
@@ -1429,7 +1429,7 @@ def main():
         else:
             print("")
             print("Dataset is not provided, please provided dataset.")
-    elif args.task == "Pattern_Testing(Flawed)":
+    elif args.task == "Pattern_Testing_Flawed":
         if args.dataset == "mpg":
             ratios = [0.05, 0.10, 0.15, 0.2, 0.25]
             X_train, X_test, y_train, y_test = load_mpg_cleaned(random_seed=params["random_seed"])
