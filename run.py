@@ -365,6 +365,8 @@ def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bi
   cb.set_label('Robustness Ratio (%)', fontsize=12)
   plt.savefig(f'{output_dir}/Pattern_testing_{args.dataset}.pdf', bbox_inches='tight')
 
+  print("Graph has been created")
+
 def normalization_all(X_train_ins, X_test_ins, y_train_ins, y_test_ins, X_train_mpg, X_test_mpg, y_train_mpg, y_test_mpg, X_train_bos, X_test_bos, y_train_bos, y_test_bos, X_train_fire, X_test_fire, y_train_fire, y_test_fire):
   print("Getting things started...")
   X_train_transformed = X_train_ins.copy()
