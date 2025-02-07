@@ -346,7 +346,7 @@ def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bi
 
   # Labels
   x_labels = df1.columns.tolist()
-  y_labels = [0.05, 0.10, 0.15, 0.2, 0.25]
+  y_labels = ratios
 
   # Plot each heatmap
   plot_heatmap(axes[0, 0], heatmap_data1, x_labels, y_labels, 'Meyer et al. (Naive Approach)')
