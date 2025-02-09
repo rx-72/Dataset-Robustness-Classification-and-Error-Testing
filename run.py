@@ -20,6 +20,335 @@ with open("data-params.json", "r") as f:
 METRICS = {
     "accuracy": accuracy
 }
+def pattern_testing_line(X_train, X_test, y_train, y_test, column_2_bins, num_bins, ratios, p1, p2, p3, rr, output_dir, args, thresholds):
+  X_train_transformed = X_train.copy()
+  X_test_transformed = X_test.copy()
+
+  columns_to_bin = column_2_bins
+  n_bins = num_bins
+  column_bins = {}
+
+  for col in columns_to_bin:
+    # Apply binning (equal-width bins in this example)
+    X_train_transformed[col], bins = pd.cut(
+        X_train[col], 
+        bins=n_bins[col], 
+        labels=False, 
+        retbins=True
+    )
+
+    X_test_transformed[col] = pd.cut(
+        X_test[col],
+        bins=bins,      # Use the same bins from X_train
+        labels=False,   # Keep consistent labels
+        include_lowest=True  # Ensure the lowest bin includes its boundary
+    )
+
+    X_train_transformed[col] = X_train_transformed[col].fillna(-1).astype(int)
+    X_test_transformed[col] = X_test_transformed[col].fillna(-1).astype(int)
+
+    column_bins[col] = bins
+
+  def get_complex_candidate_target_indices(df, candidate):
+    columns, values, conditions = candidate
+    mask = pd.Series(True, index=df.index)  # Start with a mask that selects all rows
+
+    for col, val, cond in zip(columns, values, conditions):
+        if cond == "<":
+            mask &= df.iloc[:, col] < val
+        elif cond == "=":
+            mask &= df.iloc[:, col] == val
+        elif cond == ">":
+            mask &= df.iloc[:, col] > val
+        else:
+            raise ValueError(f"Unsupported condition: {cond}")
+
+    return df[mask].index.tolist()
+
+  pattern1 = p1
+  pattern2 = p2
+  pattern3 = p3
+
+  target_indices_of_pattern1 = get_complex_candidate_target_indices(X_train_transformed, pattern1)
+  target_indices_of_pattern2 = get_complex_candidate_target_indices(X_train_transformed, pattern2)
+  target_indices_of_pattern3 = get_complex_candidate_target_indices(X_train_transformed, pattern3)
+
+  print("")
+  print("pattern1_testing (Meyer)")
+  print("")
+  robustness_ratio_range_pattern1_meyer = []
+  for seed in range(1):
+    # mpg +- 2 is robust
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pct = 0.1
+    uncertain_num = int(uncertain_pct*len(y_train))
+    for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius'):
+
+        robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num,
+                                                                    boundary_indices=target_indices_of_pattern1,
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=True, seed=seed)
+        robustness_ratio_range_pattern1_meyer = robustness_ratio_range_pattern1_meyer + [robustness_ratio]
+
+  print("")
+  print("pattern1_testing (Zorro)")
+  print("")
+  robustness_ratio_range_pattern1_zorro = []
+  for seed in range(1):
+    # mpg +- 2 is robust
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pct = 0.1
+    uncertain_num = int(uncertain_pct*len(y_train))
+    for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius'):
+        
+        robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num,
+                                                                    boundary_indices=target_indices_of_pattern1,
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=False, seed=seed)
+        robustness_ratio_range_pattern1_zorro = robustness_ratio_range_pattern1_zorro + [robustness_ratio]
+
+  print("")
+  print("pattern2_testing (Meyer)")
+  print("")
+  robustness_ratio_range_pattern2_meyer = []
+  for seed in range(1):
+    # mpg +- 2 is robust
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pct = 0.1
+    uncertain_num = int(uncertain_pct*len(y_train))
+    for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius'):
+        robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num,
+                                                                    boundary_indices=target_indices_of_pattern2,
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=True, seed=seed)
+        robustness_ratio_range_pattern2_meyer = robustness_ratio_range_pattern2_meyer + [robustness_ratio]
+
+  print("")
+  print("pattern2_testing (Zorro)")
+  print("")
+  robustness_ratio_range_pattern2_zorro = []
+  for seed in range(1):
+    # mpg +- 2 is robust
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pct = 0.1
+    uncertain_num = int(uncertain_pct*len(y_train))
+    for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius'):
+        robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num,
+                                                                    boundary_indices=target_indices_of_pattern2,
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=False, seed=seed)
+        robustness_ratio_range_pattern2_zorro = robustness_ratio_range_pattern2_zorro + [robustness_ratio]
+
+  print("")  
+  print("pattern3_testing (Meyer)")
+  print("")
+  robustness_ratio_range_pattern3_meyer = []
+  for seed in range(1):
+    # mpg +- 2 is robust
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pct = 0.1
+    uncertain_num = int(uncertain_pct*len(y_train))
+    for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius'):
+        robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num,
+                                                                    boundary_indices=target_indices_of_pattern3,
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=True, seed=seed)
+        robustness_ratio_range_pattern3_meyer = robustness_ratio_range_pattern3_meyer + [robustness_ratio]
+
+  print("") 
+  print("pattern3_testing (Zorro)")
+  print("") 
+  robustness_ratio_range_pattern3_zorro = []
+  for seed in range(1):
+    # mpg +- 2 is robust
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+
+    uncertain_radiuses = [ratio*label_range for ratio in ratios]
+    uncertain_pct = 0.1
+    uncertain_num = int(uncertain_pct*len(y_train))
+    for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius'):
+        robustness_ratio = compute_robustness_ratio_sensitive_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num,
+                                                                    boundary_indices=target_indices_of_pattern3,
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=False, seed=seed)
+        robustness_ratio_range_pattern3_zorro = robustness_ratio_range_pattern3_zorro + [robustness_ratio]
+
+  print("") 
+  print("Naive (Zorro)")
+  print("") 
+  robustness_naive = np.zeros(len(ratios))
+  for seed in tqdm(range(5), desc=f'Progress'):
+    placeholder = []
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+
+    uncertain_pct = 0.1
+    uncertain_num = int(uncertain_pct*len(y_train))
+    for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius', leave=False):
+        robustness_ratio = compute_robustness_ratio_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num, 
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=False, seed=seed)
+        placeholder = placeholder + [robustness_ratio]
+    robustness_naive = robustness_naive + np.array(placeholder)
+  robustness_naive = (robustness_naive/5).tolist()
+
+  print("") 
+  print("Naive (Meyer)")
+  print("") 
+  
+  robustness_naive_interval = np.zeros(len(ratios))
+  for seed in tqdm(range(5), desc=f'Progress'):
+    placeholder = []
+    robustness_radius = rr
+    label_range = (y_train.max()-y_train.min())
+
+    uncertain_pct = 0.1
+    uncertain_num = int(uncertain_pct*len(y_train))
+    for uncertain_radius in tqdm(uncertain_radiuses, desc=f'Varying Uncertain Radius', leave=False):
+        robustness_ratio = compute_robustness_ratio_label_error(X_train, y_train, X_test, y_test, 
+                                                                    uncertain_num=uncertain_num, 
+                                                                    uncertain_radius=uncertain_radius, 
+                                                                    robustness_radius=robustness_radius, 
+                                                                    interval=True, seed=seed)
+        placeholder = placeholder + [robustness_ratio]
+    robustness_naive_interval = robustness_naive_interval + np.array(placeholder)
+  robustness_naive_interval = (robustness_naive_interval/5).tolist()
+
+  def average_over_multiple_large_robustness_loss(robustness_lst, x):
+    sum_vals = 0
+    count = 0
+    previous = -1
+    for i in range(0, len(robustness_lst)):
+        if ratios[i] > x:
+            break
+        sum_vals += robustness_lst[i]
+        count += 1
+    average = sum_vals/count
+    statement = f"Average Robustness was {average} over {count} ratio recordings ({x} threshold)" #with {count - 1} large decreasing steps"
+    return statement
+
+  print("")
+  print("Pattern 1 Average:")
+  print(average_over_multiple_large_robustness_loss(robustness_ratio_range_pattern1_zorro, thresholds[0]))
+  print(average_over_multiple_large_robustness_loss(robustness_ratio_range_pattern1_zorro, thresholds[1]))
+  print(average_over_multiple_large_robustness_loss(robustness_ratio_range_pattern1_zorro, thresholds[2]))
+  print(average_over_multiple_large_robustness_loss(robustness_ratio_range_pattern1_zorro, thresholds[3]))
+  print("")
+  print("Pattern 2 Average:")
+  print(average_over_multiple_large_robustness_loss(robustness_ratio_range_pattern2_zorro, thresholds[0]))
+  print(average_over_multiple_large_robustness_loss(robustness_ratio_range_pattern2_zorro, thresholds[1]))
+  print(average_over_multiple_large_robustness_loss(robustness_ratio_range_pattern2_zorro, thresholds[2]))
+  print(average_over_multiple_large_robustness_loss(robustness_ratio_range_pattern2_zorro, thresholds[3]))
+  print("")
+  print("Pattern 3 Average:")
+  print(average_over_multiple_large_robustness_loss(robustness_ratio_range_pattern3_zorro, thresholds[0]))
+  print(average_over_multiple_large_robustness_loss(robustness_ratio_range_pattern3_zorro, thresholds[1]))
+  print(average_over_multiple_large_robustness_loss(robustness_ratio_range_pattern3_zorro, thresholds[2]))
+  print(average_over_multiple_large_robustness_loss(robustness_ratio_range_pattern3_zorro, thresholds[3]))
+  print("")
+
+  # Create the line plots with a 4x2 grid
+  fig, axes = plt.subplots(4, 2, figsize=(15, 18), dpi=200)
+
+  # Function to plot a single line plot with annotations
+  def plot_line(ax, x_values, y_values, title):
+    ax.plot(x_values, y_values, marker='o', linestyle='-', color='orange', alpha=0.8, label='_nolegend_')
+    ax.set_title(title, fontsize=12)
+    ax.set_xlabel('Uncertainty Radius (%)', fontsize=12)
+    ax.set_ylabel('Robustness Ratio (%)', fontsize=12)
+    ax.grid(True, which='both', linestyle='--', linewidth=0.5, alpha=0.7)
+    ax.set(ylim = (-0.05, 1.2))
+    
+    # Add text annotations for each point with dynamic offset
+    #y_offset = (max(y_values) - min(y_values)) * 0.05  # 5% of the y-range as offset
+    #for x, y in zip(x_values, y_values):
+    #    if y > 0:
+    #        ax.text(x, y + y_offset, f'{y:.3f}', ha='center', va='bottom', fontsize=8)
+    #    else:
+    #        ax.text(x, y + y_offset * 2, f'{y:.3f}', ha='center', va='bottom', fontsize=8, color='gray')
+    
+    #ax.legend()
+
+  # Plot each line
+  plot_line(axes[0, 0], ratios, robustness_naive_interval, 'Meyer et al. (Naive Approach)')
+  plot_line(axes[0, 1], ratios, robustness_naive, 'ZORRO (Naive Approach)')
+  plot_line(axes[1, 0], ratios, robustness_ratio_range_pattern1_meyer, 'Meyer et al. (Pattern 1)')
+  plot_line(axes[1, 1], ratios, robustness_ratio_range_pattern1_zorro, 'ZORRO (Pattern 1)')
+  plot_line(axes[2, 0], ratios, robustness_ratio_range_pattern2_meyer, 'Meyer et al. (Pattern 2)')
+  plot_line(axes[2, 1], ratios, robustness_ratio_range_pattern2_zorro, 'ZORRO (Pattern 2)')
+  plot_line(axes[3, 0], ratios, robustness_ratio_range_pattern3_meyer, 'Meyer et al. (Pattern 3)')
+  plot_line(axes[3, 1], ratios, robustness_ratio_range_pattern3_zorro, 'ZORRO (Pattern 3)')
+
+  # Adjust layout
+  plt.subplots_adjust(wspace=0.3, hspace=0.6, bottom=0.1, left=0.1, right=0.9)
+
+  # Save the figure
+  plt.savefig(f'{output_dir}/Pattern_Robustness_Decreasing(Meyer and Zorro)_{args.dataset}.pdf', bbox_inches='tight')
+
+  # Create the line plots with a 4x2 grid
+  fig, axes = plt.subplots(4, 1, figsize=(15, 18), dpi=200)
+  # Function to plot a single line plot with annotations
+  def plot_line(ax, x_values, y_values, title):
+    ax.plot(x_values, y_values, marker='o', linestyle='-', color='orange', alpha=0.8, label='_nolegend_')
+    ax.set_title(title, fontsize=12)
+    ax.set_xlabel('Uncertainty Radius (%)', fontsize=12)
+    ax.set_ylabel('Robustness Ratio (%)', fontsize=12)
+    ax.grid(True, which='both', linestyle='--', linewidth=0.5, alpha=0.7)
+    ax.set(ylim = (-0.05, 1.2))
+    
+    # Add text annotations for each point with dynamic offset
+    y_offset = (max(y_values) - min(y_values)) * 0.05  # 5% of the y-range as offset
+    for x, y in zip(x_values, y_values):
+        if y > 0:
+            ax.text(x, y + y_offset, f'{y:.3f}', ha='center', va='bottom', fontsize=8)
+        else:
+            ax.text(x, y + y_offset * 2, f'{y:.3f}', ha='center', va='bottom', fontsize=8, color='gray')
+    
+    ax.legend()
+
+  # Plot each line
+  plot_line(axes[0], ratios, robustness_naive, 'ZORRO (Naive Approach)')
+  plot_line(axes[1], ratios, robustness_ratio_range_pattern1_zorro, 'ZORRO (Pattern 1)')
+  plot_line(axes[2], ratios, robustness_ratio_range_pattern2_zorro, 'ZORRO (Pattern 2)')
+  plot_line(axes[3], ratios, robustness_ratio_range_pattern3_zorro, 'ZORRO (Pattern 3)')
+
+  # Adjust layout
+  plt.subplots_adjust(wspace=0.3, hspace=0.6, bottom=0.1, left=0.1, right=0.9)
+
+  # Save the figure
+  plt.savefig(f'{output_dir}/Pattern_Robustness_Decreasing(Zorro Only, Annontations)_{args.dataset}.pdf', bbox_inches='tight')
+
+
 def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bins, ratios, p1, p2, p3, rr, output_dir, args):
   X_train_transformed = X_train.copy()
   X_test_transformed = X_test.copy()
@@ -1470,6 +1799,50 @@ def main():
             pattern2 = ((6, 7), (5, 0), ('=', '>'))
             pattern3 = ((4, 8), (0, 5.8), ('>', '>'))
             pattern_testing_heat(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 50, output_dir, args)
+        else:
+            print("")
+            print("Dataset is not provided, please provided dataset.")
+    elif args.task == "Pattern_Testing_Set_Percent":
+        if args.dataset == "mpg":
+            ratios = []
+            X_train, X_test, y_train, y_test = load_mpg_cleaned(random_seed=params["random_seed"])
+            columns_to_bin = ['displacement', 'horsepower', 'weight', 'acceleration']
+            num_bins = {'displacement': int(np.sqrt(72)), 'horsepower': int(np.sqrt(87)), 'weight': int(np.sqrt(288)), 'acceleration': int(np.sqrt(86))}
+            pattern1 =  ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<'))
+            pattern2 = ((1, 2, 4), (6, 5, 3), ('<', '<', '<'))
+            pattern3 = ((3, 4, 5), (11, 3, 72.0), ('<', '<', '>'))
+            thresholds = []
+            pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2, output_dir, args, thresholds)
+        elif args.dataset == "ins":
+            ratios = []
+            X_train, X_test, y_train, y_test = load_ins_cleaned(random_seed=params["random_seed"])
+            columns_to_bin = ['bmi']
+            num_bins = {'bmi': int(np.sqrt(496))}
+            pattern1 =  ((0, 1, 2), (64.0, 4, 4.0), ('<', '<', '<'))
+            pattern2 = ((0, 1, 2), (51.0, 0, 0.0), ('>', '>', '>'))
+            pattern3 = ((0, 1, 2), (63.0, 4, 4.0), ('<', '<', '<'))
+            thresholds = []
+            pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 500, output_dir, args, thresholds)
+        elif args.dataset == "bos":
+            ratios = [0.0001, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6]
+            X_train, X_test, y_train, y_test = load_Boston_cleaned(random_seed=params["random_seed"])
+            columns_to_bin = ['CRIM', 'INDUS', 'NOX', 'RM', 'AGE', 'DIS', 'B', 'LSTAT']
+            num_bins = {'CRIM': int(np.sqrt(402)), 'INDUS': int(np.sqrt(72)), 'NOX': int(np.sqrt(76)), 'RM': int(np.sqrt(366)), 'AGE': int(np.sqrt(302)), 'DIS': int(np.sqrt(339)), 'B': int(np.sqrt(287)), 'LSTAT': int(np.sqrt(366))}
+            pattern1 =  ((5, 10), (10, 17.9), ('>', '>'))
+            pattern2 = ((7, 12), (3, 5), ('<', '<'))
+            pattern3 = ((9, 12), (398.0, 6), ('>', '<'))
+            thresholds = [0.15, 0.3, 0.45, 0.6]
+            pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2, output_dir, args, thresholds)
+        elif args.dataset == "fire":
+            ratios = []
+            X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
+            columns_to_bin = ['FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH']
+            num_bins = {'FFMC': int(np.sqrt(103)), 'DMC': int(np.sqrt(199)), 'DC': int(np.sqrt(199)), 'ISI': int(np.sqrt(112)), 'temp': int(np.sqrt(183)), 'RH': int(np.sqrt(73))}
+            pattern1 =  ((6, 7), (0, 4), ('>', '>'))
+            pattern2 = ((6, 7), (5, 0), ('=', '>'))
+            pattern3 = ((4, 8), (0, 5.8), ('>', '>'))
+            thresholds = []
+            pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 50, output_dir, args, thresholds)
         else:
             print("")
             print("Dataset is not provided, please provided dataset.")
