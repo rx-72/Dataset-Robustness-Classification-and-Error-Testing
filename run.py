@@ -73,6 +73,69 @@ def pattern_testing_line(X_train, X_test, y_train, y_test, column_2_bins, num_bi
   target_indices_of_pattern2 = get_complex_candidate_target_indices(X_train_transformed, pattern2)
   target_indices_of_pattern3 = get_complex_candidate_target_indices(X_train_transformed, pattern3)
 
+  cols = X_train.columns
+  print("")
+  print("Pattern 1:")
+  for i in range(0, len(pattern1[0])):
+    target_column = cols[pattern1[0][i]]
+    val = pattern1[1][i]
+    condition = pattern1[2][i]
+    if target_column in column_bins:
+        binnings = column_bins[target_column]
+        if condition == '>':
+            val = binnings[val]
+            print(f"'{target_column}' {condition} {val}")
+        elif condition == '<':
+            val = binnings[val - 1]
+            print(f"'{target_column}' {condition} {val}")
+        else:
+            lower_val = binnings[val - 1]
+            upper_val = binnings[val]
+            print(f"{lower_val} < '{target_column}' < {upper_val}")
+    else:
+        print(f"'{target_column}' {condition} {val}")
+  print()
+  print("Pattern 2:")
+  for i in range(0, len(pattern2[0])):
+    target_column = cols[pattern2[0][i]]
+    val = pattern2[1][i]
+    condition = pattern2[2][i]
+    if target_column in column_bins:
+        binnings = column_bins[target_column]
+        if condition == '>':
+            val = binnings[val]
+            print(f"'{target_column}' {condition} {val}")
+        elif condition == '<':
+            val = binnings[val - 1]
+            print(f"'{target_column}' {condition} {val}")
+        else:
+            lower_val = binnings[val - 1]
+            upper_val = binnings[val]
+            print(f"{lower_val} < '{target_column}' < {upper_val}")
+    else:
+        print(f"'{target_column}' {condition} {val}")
+  print()
+  print("Pattern 3:")
+  for i in range(0, len(pattern3[0])):
+    target_column = cols[pattern3[0][i]]
+    val = pattern3[1][i]
+    condition = pattern3[2][i]
+    if target_column in column_bins:
+        binnings = column_bins[target_column]
+        if condition == '>':
+            val = binnings[val]
+            print(f"'{target_column}' {condition} {val}")
+        elif condition == '<':
+            val = binnings[val - 1]
+            print(f"'{target_column}' {condition} {val}")
+        else:
+            lower_val = binnings[val - 1]
+            upper_val = binnings[val]
+            print(f"{lower_val} < '{target_column}' < {upper_val}")
+    else:
+        print(f"'{target_column}' {condition} {val}")
+  print("")
+  
   print("")
   print("pattern1_testing (Meyer)")
   print("")
@@ -401,6 +464,69 @@ def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bi
   target_indices_of_pattern1 = get_complex_candidate_target_indices(X_train_transformed, pattern1)
   target_indices_of_pattern2 = get_complex_candidate_target_indices(X_train_transformed, pattern2)
   target_indices_of_pattern3 = get_complex_candidate_target_indices(X_train_transformed, pattern3)
+
+  cols = X_train.columns
+  print("")
+  print("Pattern 1:")
+  for i in range(0, len(pattern1[0])):
+    target_column = cols[pattern1[0][i]]
+    val = pattern1[1][i]
+    condition = pattern1[2][i]
+    if target_column in column_bins:
+        binnings = column_bins[target_column]
+        if condition == '>':
+            val = binnings[val]
+            print(f"'{target_column}' {condition} {val}")
+        elif condition == '<':
+            val = binnings[val - 1]
+            print(f"'{target_column}' {condition} {val}")
+        else:
+            lower_val = binnings[val - 1]
+            upper_val = binnings[val]
+            print(f"{lower_val} < '{target_column}' < {upper_val}")
+    else:
+        print(f"'{target_column}' {condition} {val}")
+  print()
+  print("Pattern 2:")
+  for i in range(0, len(pattern2[0])):
+    target_column = cols[pattern2[0][i]]
+    val = pattern2[1][i]
+    condition = pattern2[2][i]
+    if target_column in column_bins:
+        binnings = column_bins[target_column]
+        if condition == '>':
+            val = binnings[val]
+            print(f"'{target_column}' {condition} {val}")
+        elif condition == '<':
+            val = binnings[val - 1]
+            print(f"'{target_column}' {condition} {val}")
+        else:
+            lower_val = binnings[val - 1]
+            upper_val = binnings[val]
+            print(f"{lower_val} < '{target_column}' < {upper_val}")
+    else:
+        print(f"'{target_column}' {condition} {val}")
+  print()
+  print("Pattern 3:")
+  for i in range(0, len(pattern3[0])):
+    target_column = cols[pattern3[0][i]]
+    val = pattern3[1][i]
+    condition = pattern3[2][i]
+    if target_column in column_bins:
+        binnings = column_bins[target_column]
+        if condition == '>':
+            val = binnings[val]
+            print(f"'{target_column}' {condition} {val}")
+        elif condition == '<':
+            val = binnings[val - 1]
+            print(f"'{target_column}' {condition} {val}")
+        else:
+            lower_val = binnings[val - 1]
+            upper_val = binnings[val]
+            print(f"{lower_val} < '{target_column}' < {upper_val}")
+    else:
+        print(f"'{target_column}' {condition} {val}")
+  print("")
 
   print("pattern1_testing (Meyer)")
   robustness_dicts_interval_pattern1 = []
