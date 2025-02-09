@@ -576,7 +576,7 @@ def normalization_all(X_train_ins, X_test_ins, y_train_ins, y_test_ins, X_train_
                 #print(robustness_ratio)
         print(robustness_radius)
         #robustness_radii_10.append(robustness_radius)
-        robustness_radii_10.append(robustness_radius/np.std(y_test))
+        robustness_radii_10.append(robustness_radius/(max(y_test) - min(y_test)))
 
       results = {}
 
