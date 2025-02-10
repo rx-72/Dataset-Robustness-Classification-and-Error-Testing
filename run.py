@@ -411,6 +411,10 @@ def pattern_testing_line(X_train, X_test, y_train, y_test, column_2_bins, num_bi
   # Save the figure
   plt.savefig(f'{output_dir}/Pattern_Robustness_Decreasing(Zorro Only, Annontations)_{args.dataset}.pdf', bbox_inches='tight')
 
+  print("")
+  print("Graphing Completed")
+  print("")
+
 
 def pattern_testing_heat(X_train, X_test, y_train, y_test, column_2_bins, num_bins, ratios, p1, p2, p3, rr, output_dir, args):
   X_train_transformed = X_train.copy()
