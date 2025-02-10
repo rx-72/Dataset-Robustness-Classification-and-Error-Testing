@@ -1852,18 +1852,18 @@ def main():
             X_train, X_test, y_train, y_test = load_mpg_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['displacement', 'horsepower', 'weight', 'acceleration']
             num_bins = {'displacement': int(np.sqrt(72)), 'horsepower': int(np.sqrt(87)), 'weight': int(np.sqrt(288)), 'acceleration': int(np.sqrt(86))}
-            pattern1 =  ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<'))
-            pattern2 = ((1, 2, 4), (6, 5, 3), ('<', '<', '<'))
-            pattern3 = ((3, 4, 5), (11, 3, 72.0), ('<', '<', '>'))
+            pattern1 =  ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<')) #0.1
+            pattern2 = ((1, 3, 6), (0, 3, 1.0), ('>', '>', '>'))
+            pattern3 = ((3, 4, 5), (4, 1, 78.0), ('>', '>', '>'))
             normalization(X_train, y_train, X_test, y_test, bin_numbers, "MPG", 1, 0.01, columns_to_bin, num_bins, pattern1, pattern2, pattern3)
         elif args.dataset == "ins":
             bin_numbers = [15, 36, 41, 38]
             X_train, X_test, y_train, y_test = load_ins_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['bmi']
             num_bins = {'bmi': int(np.sqrt(496))}
-            pattern1 =  ((0, 1, 2), (64.0, 4, 4.0), ('<', '<', '<'))
-            pattern2 = ((0, 1, 2), (51.0, 0, 0.0), ('>', '>', '>'))
-            pattern3 = ((0, 1, 2), (63.0, 4, 4.0), ('<', '<', '<'))
+            pattern1 =  ((1,), (9,), ('=',))
+            pattern2 = ((1,), (4,), ('<',))
+            pattern3 = ((1,), (10,), ('=',))
             normalization(X_train, y_train, X_test, y_test, bin_numbers, "INS", 1, 100, columns_to_bin, num_bins, pattern1, pattern2, pattern3)
         elif args.dataset == "bos":
             bin_numbers = [7, 7, 22, 7] #fix
@@ -1898,18 +1898,18 @@ def main():
             X_train, X_test, y_train, y_test = load_mpg_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['displacement', 'horsepower', 'weight', 'acceleration']
             num_bins = {'displacement': int(np.sqrt(72)), 'horsepower': int(np.sqrt(87)), 'weight': int(np.sqrt(288)), 'acceleration': int(np.sqrt(86))}
-            pattern1 =  ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<'))
-            pattern2 = ((1, 2, 4), (6, 5, 3), ('<', '<', '<'))
-            pattern3 = ((3, 4, 5), (11, 3, 72.0), ('<', '<', '>'))
+            pattern1 =  ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<')) #0.1
+            pattern2 = ((1, 3, 6), (0, 3, 1.0), ('>', '>', '>'))
+            pattern3 = ((3, 4, 5), (4, 1, 78.0), ('>', '>', '>'))
             pattern_testing_heat(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2, output_dir, args)
         elif args.dataset == "ins":
             ratios = [0.02, 0.04, 0.06, 0.08]
             X_train, X_test, y_train, y_test = load_ins_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['bmi']
             num_bins = {'bmi': int(np.sqrt(496))}
-            pattern1 =  ((0, 1, 2), (64.0, 4, 4.0), ('<', '<', '<'))
-            pattern2 = ((0, 1, 2), (51.0, 0, 0.0), ('>', '>', '>'))
-            pattern3 = ((0, 1, 2), (63.0, 4, 4.0), ('<', '<', '<'))
+            pattern1 =  ((1,), (9,), ('=',))
+            pattern2 = ((1,), (4,), ('<',))
+            pattern3 = ((1,), (10,), ('=',))
             pattern_testing_heat(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 500, output_dir, args)
         elif args.dataset == "bos":
             ratios = [0.05, 0.10, 0.15, 0.2, 0.25]
@@ -1938,20 +1938,20 @@ def main():
             X_train, X_test, y_train, y_test = load_mpg_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['displacement', 'horsepower', 'weight', 'acceleration']
             num_bins = {'displacement': int(np.sqrt(72)), 'horsepower': int(np.sqrt(87)), 'weight': int(np.sqrt(288)), 'acceleration': int(np.sqrt(86))}
-            pattern1 =  ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<'))
-            pattern2 = ((1, 2, 4), (6, 5, 3), ('<', '<', '<'))
-            pattern3 = ((3, 4, 5), (11, 3, 72.0), ('<', '<', '>'))
+            pattern1 =  ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<')) #0.1
+            pattern2 = ((1, 3, 6), (0, 3, 1.0), ('>', '>', '>'))
+            pattern3 = ((3, 4, 5), (4, 1, 78.0), ('>', '>', '>'))
             thresholds = [0.275, 0.55, 0.825, 1.1]
             pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2, output_dir, args, thresholds)
         elif args.dataset == "ins":
-            ratios = []
+            ratios = [0.0001, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16]
             X_train, X_test, y_train, y_test = load_ins_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['bmi']
             num_bins = {'bmi': int(np.sqrt(496))}
-            pattern1 =  ((0, 1, 2), (64.0, 4, 4.0), ('<', '<', '<'))
-            pattern2 = ((0, 1, 2), (51.0, 0, 0.0), ('>', '>', '>'))
-            pattern3 = ((0, 1, 2), (63.0, 4, 4.0), ('<', '<', '<'))
-            thresholds = []
+            pattern1 =  ((1,), (9,), ('=',))
+            pattern2 = ((1,), (4,), ('<',))
+            pattern3 = ((1,), (10,), ('=',))
+            thresholds = [0.04, 0.08, 0.12, 0.16]
             pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 500, output_dir, args, thresholds)
         elif args.dataset == "bos":
             ratios = [0.0001, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6]
@@ -1964,14 +1964,14 @@ def main():
             thresholds = [0.15, 0.3, 0.45, 0.6]
             pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2, output_dir, args, thresholds)
         elif args.dataset == "fire":
-            ratios = []
+            ratios = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]
             X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH']
             num_bins = {'FFMC': int(np.sqrt(103)), 'DMC': int(np.sqrt(199)), 'DC': int(np.sqrt(199)), 'ISI': int(np.sqrt(112)), 'temp': int(np.sqrt(183)), 'RH': int(np.sqrt(73))}
             pattern1 =  ((6, 7), (0, 4), ('>', '>'))
             pattern2 = ((6, 7), (5, 0), ('=', '>'))
             pattern3 = ((4, 8), (0, 5.8), ('>', '>'))
-            thresholds = []
+            thresholds = [0.125, 0.25, 0.375, 0.5]
             pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 50, output_dir, args, thresholds)
         else:
             print("")
