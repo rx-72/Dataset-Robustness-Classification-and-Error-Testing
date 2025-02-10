@@ -1934,14 +1934,14 @@ def main():
             print("Dataset is not provided, please provided dataset.")
     elif args.task == "Pattern_Testing_Set_Percent":
         if args.dataset == "mpg":
-            ratios = []
+            ratios = [0.00001, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1]
             X_train, X_test, y_train, y_test = load_mpg_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['displacement', 'horsepower', 'weight', 'acceleration']
             num_bins = {'displacement': int(np.sqrt(72)), 'horsepower': int(np.sqrt(87)), 'weight': int(np.sqrt(288)), 'acceleration': int(np.sqrt(86))}
             pattern1 =  ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<'))
             pattern2 = ((1, 2, 4), (6, 5, 3), ('<', '<', '<'))
             pattern3 = ((3, 4, 5), (11, 3, 72.0), ('<', '<', '>'))
-            thresholds = []
+            thresholds = [0.275, 0.55, 0.825, 1.1]
             pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2, output_dir, args, thresholds)
         elif args.dataset == "ins":
             ratios = []
