@@ -1195,7 +1195,7 @@ def normalization_all(X_train_ins, X_test_ins, y_train_ins, y_test_ins, X_train_
         raise ValueError(f"Unsupported condition: {cond}")
     return df[mask].index.tolist()
 
-  pattern_ins = ((0, 1, 2), (51.0, 0, 0.0), ('>', '>', '>'))
+  pattern_ins = ((1,), (4,), ('<',))
   target_indices_of_pattern_ins = get_complex_candidate_target_indices(X_train_transformed, pattern_ins)
   boundary_indices_lst = [target_indices_of_pattern_ins]
 
@@ -1259,7 +1259,7 @@ def normalization_all(X_train_ins, X_test_ins, y_train_ins, y_test_ins, X_train_
 
     column_bins[col] = bins
 
-  pattern_bos = ((7, 12), (3, 5), ('<', '<'))
+  pattern_bos = ((5, 10), (10, 17.9), ('>', '>'))
   target_indices_of_pattern_bos = get_complex_candidate_target_indices(X_train_transformed, pattern_bos)
   boundary_indices_lst = boundary_indices_lst + [target_indices_of_pattern_bos]
 
@@ -1291,7 +1291,7 @@ def normalization_all(X_train_ins, X_test_ins, y_train_ins, y_test_ins, X_train_
 
     column_bins[col] = bins
 
-  pattern_fire = ((4, 8), (0, 5.8), ('>', '>'))
+  pattern_fire = ((6, 7), (5, 6), ('=', '<'))
   target_indices_of_pattern_fire = get_complex_candidate_target_indices(X_train_transformed, pattern_fire)
   boundary_indices_lst = boundary_indices_lst + [target_indices_of_pattern_fire]
 
