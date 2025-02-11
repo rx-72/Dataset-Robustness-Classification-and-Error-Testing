@@ -20,7 +20,7 @@ with open("data-params.json", "r") as f:
 METRICS = {
     "accuracy": accuracy
 }
-def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pattern_size, rr, ur, thresholds=None):
+def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pattern_size, rr, ur, thresholds=None, args=None):
   X_train_transformed = X_train.copy()
   X_test_transformed = X_test.copy()
 
@@ -114,6 +114,8 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
   print("")
 
   candidates = compute_optimized_candidates(X_train_transformed, 0.1, n_features_to_combine=pattern_size)
+  if args != None:
+    candidates[9892] = ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<'))
   
   def get_complex_candidate_target_indices(df, candidate):
     columns, values, conditions = candidate
@@ -2191,7 +2193,7 @@ def main():
             pattern1 =  ((6, 7), (0, 4), ('>', '>'))
             pattern2 = ((6, 7), (5, 0), ('=', '>'))
             pattern3 = ((4, 8), (0, 5.8), ('>', '>'))
-            normalization(X_train, y_train, X_test, y_test, bin_numbers, "Fire", 50, 0.05, columns_to_bin, num_bins, pattern1, pattern2, pattern3)
+            normalization(X_train, y_train, X_test, y_test, bin_numbers, "Fire", 50, 0.5, columns_to_bin, num_bins, pattern1, pattern2, pattern3)
         elif args.dataset == "all":
             X_train_ins, X_test_ins, y_train_ins, y_test_ins = load_ins_cleaned(random_seed=params["random_seed"])
             X_train_mpg, X_test_mpg, y_train_mpg, y_test_mpg = load_mpg_cleaned(random_seed=params["random_seed"])
@@ -2290,19 +2292,22 @@ def main():
             X_train, X_test, y_train, y_test = load_mpg_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['displacement', 'horsepower', 'weight', 'acceleration']
             num_bins = {'displacement': int(np.sqrt(72)), 'horsepower': int(np.sqrt(87)), 'weight': int(np.sqrt(288)), 'acceleration': int(np.sqrt(86))}
+            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 3, 2, 0.25, thresholds=[9000, 11000], args=True)
         elif args.dataset == "ins":
             X_train, X_test, y_train, y_test = load_ins_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['bmi']
             num_bins = {'bmi': int(np.sqrt(496))}
-            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 1, 500, 0.08, thresholds=None)
+            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 1, 500, 0.08, thresholds=None, args=None)
         elif args.dataset == "bos":
             X_train, X_test, y_train, y_test = load_Boston_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['CRIM', 'INDUS', 'NOX', 'RM', 'AGE', 'DIS', 'B', 'LSTAT']
             num_bins = {'CRIM': int(np.sqrt(402)), 'INDUS': int(np.sqrt(72)), 'NOX': int(np.sqrt(76)), 'RM': int(np.sqrt(366)), 'AGE': int(np.sqrt(302)), 'DIS': int(np.sqrt(339)), 'B': int(np.sqrt(287)), 'LSTAT': int(np.sqrt(366))}
+            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 2, 2, 0.25, thresholds=[0, 2000], args=None)
         elif args.dataset == "fire":
             X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH']
             num_bins = {'FFMC': int(np.sqrt(103)), 'DMC': int(np.sqrt(199)), 'DC': int(np.sqrt(199)), 'ISI': int(np.sqrt(112)), 'temp': int(np.sqrt(183)), 'RH': int(np.sqrt(73))}
+            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 2, 50, 0.25, thresholds=[16000, 21000], args=None)
     else:
             print("")
             print("No task method given. Please declare type of task to run")
