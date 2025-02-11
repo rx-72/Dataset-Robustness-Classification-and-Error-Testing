@@ -722,6 +722,19 @@ def pattern_testing_line(X_train, X_test, y_train, y_test, column_2_bins, num_bi
   # Save the figure
   plt.savefig(f'{output_dir}/Pattern_Robustness_Decreasing(Zorro Only, Annontations)_{args.dataset}.pdf', bbox_inches='tight')
 
+  plt.figure(figsize=(20, 12))
+  plt.plot(ratios, robustness_naive)
+  plt.plot(ratios, robustness_ratio_range_pattern1_zorro)
+  plt.plot(ratios, robustness_ratio_range_pattern2_zorro)
+  plt.plot(ratios, robustness_ratio_range_pattern3_zorro)
+  plt.axhline(y=0.8, linestyle='dotted', color='black')
+  plt.axhline(y=0.6, linestyle='dotted', color='black')
+  plt.axhline(y=0.2, linestyle='dotted', color='black')
+  plt.legend(['Naive', 'Pattern 1', 'Pattern 2', 'Pattern 3'])
+  plt.xlabel('Uncertainty Radius (%)', fontsize=12)
+  plt.ylabel('Robustness Ratio (%)', fontsize=12)
+  plt.savefig(f'{output_dir}/Multi_Robustness_lineplot_(Zorro w\ annotations)_{args.dataset}.pdf', bbox_inches='tight')
+
   print("")
   print("Graphing Completed")
   print("")
