@@ -2190,9 +2190,9 @@ def main():
             X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH']
             num_bins = {'FFMC': int(np.sqrt(103)), 'DMC': int(np.sqrt(199)), 'DC': int(np.sqrt(199)), 'ISI': int(np.sqrt(112)), 'temp': int(np.sqrt(183)), 'RH': int(np.sqrt(73))}
-            pattern1 =  ((6, 7), (0, 4), ('>', '>'))
-            pattern2 = ((6, 7), (5, 0), ('=', '>'))
-            pattern3 = ((4, 8), (0, 5.8), ('>', '>'))
+            pattern1 =  ((6, 7), (5, 6), ('=', '<')) #17.3, 0.1 percentage
+            pattern2 = ((7, 9), (4, 1.4), ('>', '<'))
+            pattern3 = ((5, 8), (0, 4.5), ('=', '<'))
             normalization(X_train, y_train, X_test, y_test, bin_numbers, "Fire", 50, 0.5, columns_to_bin, num_bins, pattern1, pattern2, pattern3)
         elif args.dataset == "all":
             X_train_ins, X_test_ins, y_train_ins, y_test_ins = load_ins_cleaned(random_seed=params["random_seed"])
@@ -2236,9 +2236,9 @@ def main():
             X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH']
             num_bins = {'FFMC': int(np.sqrt(103)), 'DMC': int(np.sqrt(199)), 'DC': int(np.sqrt(199)), 'ISI': int(np.sqrt(112)), 'temp': int(np.sqrt(183)), 'RH': int(np.sqrt(73))}
-            pattern1 =  ((6, 7), (0, 4), ('>', '>'))
-            pattern2 = ((6, 7), (5, 0), ('=', '>'))
-            pattern3 = ((4, 8), (0, 5.8), ('>', '>'))
+            pattern1 =  ((6, 7), (5, 6), ('=', '<')) #17.3, 0.1 percentage
+            pattern2 = ((7, 9), (4, 1.4), ('>', '<'))
+            pattern3 = ((5, 8), (0, 4.5), ('=', '<'))
             pattern_testing_heat(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 50, output_dir, args)
         else:
             print("")
@@ -2279,9 +2279,9 @@ def main():
             X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH']
             num_bins = {'FFMC': int(np.sqrt(103)), 'DMC': int(np.sqrt(199)), 'DC': int(np.sqrt(199)), 'ISI': int(np.sqrt(112)), 'temp': int(np.sqrt(183)), 'RH': int(np.sqrt(73))}
-            pattern1 =  ((6, 7), (0, 4), ('>', '>'))
-            pattern2 = ((6, 7), (5, 0), ('=', '>'))
-            pattern3 = ((4, 8), (0, 5.8), ('>', '>'))
+            pattern1 =  ((6, 7), (5, 6), ('=', '<')) #17.3, 0.1 percentage
+            pattern2 = ((7, 9), (4, 1.4), ('>', '<'))
+            pattern3 = ((5, 8), (0, 4.5), ('=', '<'))
             thresholds = [0.125, 0.25, 0.375, 0.5]
             pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 50, output_dir, args, thresholds)
         else:
