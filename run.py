@@ -2322,7 +2322,7 @@ def main():
             X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH']
             num_bins = {'FFMC': int(np.sqrt(103)), 'DMC': int(np.sqrt(199)), 'DC': int(np.sqrt(199)), 'ISI': int(np.sqrt(112)), 'temp': int(np.sqrt(183)), 'RH': int(np.sqrt(73))}
-            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 2, 50, 0.25, thresholds=[16000, 21000], args=None)
+            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 2, 50, 0.25, thresholds=[16000, 21000], args=None) #Run this to test when terminal is completely fresh deadline wise
     else:
             print("")
             print("No task method given. Please declare type of task to run")
