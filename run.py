@@ -117,6 +117,9 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
 
   candidates = compute_optimized_candidates(X_train_transformed, 0.1, n_features_to_combine=pattern_size)
   if args != None:
+    print("")
+    print("Was Ran")
+    print("")
     candidates[9892] = ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<'))
   
   def get_complex_candidate_target_indices(df, candidate):
@@ -246,6 +249,7 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
                     lst = lst + [i]
             else:
                 break
+  print(lst)
   pattern1 = lst[0][1]
   pattern2 = lst[1][1]
   pattern3 = lst[2][1]
