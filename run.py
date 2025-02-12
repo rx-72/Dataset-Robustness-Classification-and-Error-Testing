@@ -117,9 +117,6 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
 
   candidates = compute_optimized_candidates(X_train_transformed, 0.1, n_features_to_combine=pattern_size)
   if args != None:
-    print("")
-    print("Was Ran")
-    print("")
     candidates[9892] = ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<'))
   
   def get_complex_candidate_target_indices(df, candidate):
@@ -225,6 +222,10 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
 
   result = top_k_finder(top_candidates, X_train_transformed, X_train, y_train, X_test, y_test, 10, 0.1, rr, ur)
 
+  print("")
+  print(result)
+  print("")
+  
   lst = []
   threshold_count = len(X_train)*0.1*0.25
   for i in result:
@@ -249,7 +250,7 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
                     lst = lst + [i]
             else:
                 break
-  print(lst)
+  
   pattern1 = lst[0][1]
   pattern2 = lst[1][1]
   pattern3 = lst[2][1]
@@ -2311,7 +2312,7 @@ def main():
             X_train, X_test, y_train, y_test = load_mpg_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['displacement', 'horsepower', 'weight', 'acceleration']
             num_bins = {'displacement': int(np.sqrt(72)), 'horsepower': int(np.sqrt(87)), 'weight': int(np.sqrt(288)), 'acceleration': int(np.sqrt(86))}
-            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 3, 2, 0.25, thresholds=[9000, 11000], args=True)
+            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 3, 2, 0.25, thresholds=[9000, 10000], args=True)
         elif args.dataset == "ins":
             X_train, X_test, y_train, y_test = load_ins_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['bmi']
