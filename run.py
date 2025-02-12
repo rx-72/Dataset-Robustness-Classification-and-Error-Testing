@@ -210,14 +210,14 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
 
         seen_ratios.add(robustness_ratio)
         
-        print(robustness_ratio)
+        #print(robustness_ratio)
         
         top_k_patterns = top_k_patterns + [(robustness_ratio, candidate)]
         
     return sorted(top_k_patterns, key=lambda x: x[0])[0:k]
 
   print("")
-  print(f"Organizing results for top 3 patterns based on Worst Error injection Results")
+  print(f"Organizing results for top 3 patterns based on Worst Error injection Results...")
   print("")
 
   result = top_k_finder(top_candidates, X_train_transformed, X_train, y_train, X_test, y_test, 10, 0.1, rr, ur)
