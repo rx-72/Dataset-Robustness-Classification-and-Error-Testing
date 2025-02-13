@@ -225,12 +225,14 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
 
   result = top_k_finder(top_candidates, X_train_transformed, X_train, y_train, X_test, y_test, 10, 0.1, rr, ur)
 
-  #print("")
-  #print(result)
-  #print("")
+  print("")
+  print(result)
+  print("")
   
   lst = []
   threshold_count = len(X_train)*0.1*0.5
+  print(f"Threshold: {threshold_count}")
+  print("")
   for i in result:
     def matchcounter(x, y):
         count = 0
@@ -253,6 +255,8 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
                     lst = lst + [i]
             else:
                 break
+
+  print(lst)
   
   pattern1 = lst[0][1]
   pattern2 = lst[1][1]
