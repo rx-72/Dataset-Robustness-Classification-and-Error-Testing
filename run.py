@@ -116,11 +116,6 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
   print("")
 
   candidates = compute_optimized_candidates(X_train_transformed, 0.1, n_features_to_combine=pattern_size)
-  if args != None:
-    
-    candidates[9001] = ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<'))
-    candidates[9002] = ((1, 3, 6), (0, 3, 1.0), ('>', '>', '>'))
-    candidates[9003] = ((3, 4, 5), (4, 1, 78.0), ('>', '>', '>'))
   
   def get_complex_candidate_target_indices(df, candidate):
     columns, values, conditions = candidate
@@ -171,10 +166,12 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
         seen_mse.add(new_mse)
 
         top_candidates = top_candidates + [(new_mse, candidate, number_indices)]
-    if thresholds == None:
+    if:
       top_candidates = sorted(top_candidates, key=lambda x: (x[0], -x[2]), reverse=True)
     else:
-      top_candidates = sorted(top_candidates, key=lambda x: (x[0], -x[2]), reverse=True)[thresholds[0]:thresholds[1]]
+      top_candidates = sorted(top_candidates, key=lambda x: (x[0], -x[2]), reverse=True)[thresholds[0]:thresholds[1]]  
+    
+    
     return top_candidates
 
   print("")
@@ -2319,7 +2316,7 @@ def main():
             X_train, X_test, y_train, y_test = load_mpg_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['displacement', 'horsepower', 'weight', 'acceleration']
             num_bins = {'displacement': int(np.sqrt(72)), 'horsepower': int(np.sqrt(87)), 'weight': int(np.sqrt(288)), 'acceleration': int(np.sqrt(86))}
-            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 3, 2, 0.25, thresholds=[9000, 10000], args=True)
+            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 3, 2, 0.25, thresholds=[0, 3000], args=True)
         elif args.dataset == "ins":
             X_train, X_test, y_train, y_test = load_ins_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['bmi']
