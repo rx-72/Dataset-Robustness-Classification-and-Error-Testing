@@ -118,9 +118,9 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
   candidates = compute_optimized_candidates(X_train_transformed, 0.1, n_features_to_combine=pattern_size)
   if args != None:
     
-    candidates[9892] = ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<'))
-    candidates[9050] = ((1, 3, 6), (0, 3, 1.0), ('>', '>', '>'))
-    candidates[9051] = ((3, 4, 5), (4, 1, 78.0), ('>', '>', '>'))
+    candidates[9001] = ((3, 4, 5), (9, 3, 82.0), ('<', '<', '<'))
+    candidates[9002] = ((1, 3, 6), (0, 3, 1.0), ('>', '>', '>'))
+    candidates[9003] = ((3, 4, 5), (4, 1, 78.0), ('>', '>', '>'))
   
   def get_complex_candidate_target_indices(df, candidate):
     columns, values, conditions = candidate
