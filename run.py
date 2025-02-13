@@ -1393,7 +1393,7 @@ def normalization_all(X_train_ins, X_test_ins, y_train_ins, y_test_ins, X_train_
       items = list(sorted(results.items(), key=lambda x: x[1]))
         
       for item in items:
-        print(f"Normalized robustness score for {item[0]} dataset is {item[1]:.4f}")
+        print(f"Normalized robustness score for {item[0]} dataset under worst case scenario is {item[1]:.4f}")
 
       worst = items[0]
       best = items[-1]
