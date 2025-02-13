@@ -166,7 +166,7 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
         seen_mse.add(new_mse)
 
         top_candidates = top_candidates + [(new_mse, candidate, number_indices)]
-    if:
+    if thresholds == None:
       top_candidates = sorted(top_candidates, key=lambda x: (x[0], -x[2]), reverse=True)
     else:
       top_candidates = sorted(top_candidates, key=lambda x: (x[0], -x[2]), reverse=True)[thresholds[0]:thresholds[1]]  
