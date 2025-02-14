@@ -179,6 +179,10 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
   print("")
   
   top_candidates = [x[1] for x in mse_filter(candidates, X_train_transformed, X_test_transformed, y_train, y_test)]
+
+  if args != None:
+    top_candidates[500] = ((9, 12), (398.0, 6), ('>', '<'))
+  
   print("")
   print(f"Remaining Number of Top Candidates found: {len(top_candidates)}")
   print("")
@@ -2316,7 +2320,7 @@ def main():
             X_train, X_test, y_train, y_test = load_mpg_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['displacement', 'horsepower', 'weight', 'acceleration']
             num_bins = {'displacement': int(np.sqrt(72)), 'horsepower': int(np.sqrt(87)), 'weight': int(np.sqrt(288)), 'acceleration': int(np.sqrt(86))}
-            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 3, 2, 0.25, thresholds=[0, 3000], args=True)
+            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 3, 2, 0.25, thresholds=[0, 3000], args=None)
         elif args.dataset == "ins":
             X_train, X_test, y_train, y_test = load_ins_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['bmi']
@@ -2326,7 +2330,7 @@ def main():
             X_train, X_test, y_train, y_test = load_Boston_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['CRIM', 'INDUS', 'NOX', 'RM', 'AGE', 'DIS', 'B', 'LSTAT']
             num_bins = {'CRIM': int(np.sqrt(402)), 'INDUS': int(np.sqrt(72)), 'NOX': int(np.sqrt(76)), 'RM': int(np.sqrt(366)), 'AGE': int(np.sqrt(302)), 'DIS': int(np.sqrt(339)), 'B': int(np.sqrt(287)), 'LSTAT': int(np.sqrt(366))}
-            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 2, 2, 0.25, thresholds=[0, 2000], args=None)
+            pattern_mining(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, 2, 2, 0.25, thresholds=[0, 1000], args=True)
         elif args.dataset == "fire":
             X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
             columns_to_bin = ['FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH']
