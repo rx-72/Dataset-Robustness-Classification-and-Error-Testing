@@ -737,17 +737,29 @@ def pattern_testing_line(X_train, X_test, y_train, y_test, column_2_bins, num_bi
   # Save the figure
   plt.savefig(f'{output_dir}/Pattern_Robustness_Decreasing(Zorro Only, Annontations)_{args.dataset}.pdf', bbox_inches='tight')
 
-  plt.figure(figsize=(20, 12))
-  plt.plot(ratios, robustness_naive)
-  plt.plot(ratios, robustness_ratio_range_pattern1_zorro)
-  plt.plot(ratios, robustness_ratio_range_pattern2_zorro)
-  plt.plot(ratios, robustness_ratio_range_pattern3_zorro)
-  plt.axhline(y=0.8, linestyle='dotted', color='black')
-  plt.axhline(y=0.6, linestyle='dotted', color='black')
-  plt.axhline(y=0.2, linestyle='dotted', color='black')
-  plt.legend(['Naive', 'Pattern 1', 'Pattern 2', 'Pattern 3'])
-  plt.xlabel('Uncertainty Radius (%)', fontsize=12)
-  plt.ylabel('Robustness Ratio (%)', fontsize=12)
+  plt.figure(figsize=(30, 30))
+  plt.xlim(0, 0.15)
+  colors = ['blue', 'red', 'green', 'purple']
+  linestyles = ['-', '-', '-', '-']
+  labels = ['Naive', 'Pattern 1', 'Pattern 2', 'Pattern 3']
+  patterns = [
+    robustness_naive, 
+    robustness_ratio_range_pattern1_zorro, 
+    robustness_ratio_range_pattern2_zorro, 
+    robustness_ratio_range_pattern3_zorro
+  ]
+  for i, (pattern, color, linestyle, label) in enumerate(zip(patterns, colors, linestyles, labels)):
+    pattern = np.array(pattern)  # Convert list to NumPy array
+    plt.plot(ratios, pattern, color=color, linestyle=linestyle, linewidth=3, label=label)
+    
+  for y in [0.8, 0.6, 0.2]:
+    plt.axhline(y=y, linestyle='dotted', color='black', linewidth=2)
+  
+  plt.xlabel('Uncertainty Radius (%)', fontsize=24)
+  plt.ylabel('Robustness Ratio (%)', fontsize=24)
+  plt.xticks(fontsize=24)
+  plt.yticks(fontsize=24)
+  plt.legend(fontsize=30, loc='lower left')
   plt.savefig(f'{output_dir}/Multi_Robustness_lineplot_(Zorro w\ annotations)_{args.dataset}.pdf', bbox_inches='tight')
 
   print("")
