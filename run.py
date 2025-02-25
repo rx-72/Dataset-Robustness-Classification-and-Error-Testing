@@ -738,7 +738,7 @@ def pattern_testing_line(X_train, X_test, y_train, y_test, column_2_bins, num_bi
   plt.savefig(f'{output_dir}/Pattern_Robustness_Decreasing(Zorro Only, Annontations)_{args.dataset}.pdf', bbox_inches='tight')
 
   plt.figure(figsize=(30, 30))
-  plt.xlim(0, 0.15)
+  plt.xlim(0, 0.5)
   colors = ['blue', 'red', 'green', 'purple']
   linestyles = ['-', '-', '-', '-']
   labels = ['Naive', 'Pattern 1', 'Pattern 2', 'Pattern 3']
