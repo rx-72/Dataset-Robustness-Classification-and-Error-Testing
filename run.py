@@ -346,7 +346,7 @@ def pattern_mining(X_train, X_test, y_train, y_test, column_2_bins, num_bins, pa
   print(f"Robustness results after utilizing pattern 3: {robustness3}")
   print("")
   
-def pattern_testing_line(X_train, X_test, y_train, y_test, column_2_bins, num_bins, ratios, p1, p2, p3, rr, output_dir, args, thresholds):
+def pattern_testing_line(X_train, X_test, y_train, y_test, column_2_bins, num_bins, ratios, p1, p2, p3, rr, output_dir, args, thresholds, xlimit):
   X_train_transformed = X_train.copy()
   X_test_transformed = X_test.copy()
 
@@ -738,7 +738,7 @@ def pattern_testing_line(X_train, X_test, y_train, y_test, column_2_bins, num_bi
   plt.savefig(f'{output_dir}/Pattern_Robustness_Decreasing(Zorro Only, Annontations)_{args.dataset}.pdf', bbox_inches='tight')
 
   plt.figure(figsize=(30, 30))
-  plt.xlim(0, 0.5)
+  plt.xlim(0, xlimit)
   colors = ['blue', 'red', 'green', 'purple']
   linestyles = ['-', '-', '-', '-']
   labels = ['Naive', 'Pattern 1', 'Pattern 2', 'Pattern 3']
@@ -2293,7 +2293,7 @@ def main():
             pattern2 = ((1, 3, 6), (0, 3, 1.0), ('>', '>', '>'))
             pattern3 = ((3, 4, 5), (4, 1, 78.0), ('>', '>', '>'))
             thresholds = [0.275, 0.55, 0.825, 1.1]
-            pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2, output_dir, args, thresholds)
+            pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2, output_dir, args, thresholds, 0.5)
         elif args.dataset == "ins":
             ratios = [0.0001, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16]
             X_train, X_test, y_train, y_test = load_ins_cleaned(random_seed=params["random_seed"])
@@ -2303,7 +2303,7 @@ def main():
             pattern2 = ((1,), (4,), ('<',))
             pattern3 = ((1,), (10,), ('=',))
             thresholds = [0.04, 0.08, 0.12, 0.16]
-            pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 500, output_dir, args, thresholds)
+            pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 500, output_dir, args, thresholds, 0.15)
         elif args.dataset == "bos":
             ratios = [0.0001, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6]
             X_train, X_test, y_train, y_test = load_Boston_cleaned(random_seed=params["random_seed"])
@@ -2313,7 +2313,7 @@ def main():
             pattern2 = ((7, 12), (3, 5), ('<', '<'))
             pattern3 = ((9, 12), (398.0, 6), ('>', '<'))
             thresholds = [0.15, 0.3, 0.45, 0.6]
-            pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2, output_dir, args, thresholds)
+            pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 2, output_dir, args, thresholds, 0.5)
         elif args.dataset == "fire":
             ratios = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]
             X_train, X_test, y_train, y_test = load_Fire_cleaned(random_seed=params["random_seed"])
@@ -2323,7 +2323,7 @@ def main():
             pattern2 = ((7, 9), (4, 1.4), ('>', '<'))
             pattern3 = ((5, 8), (0, 4.5), ('=', '<'))
             thresholds = [0.125, 0.25, 0.375, 0.5]
-            pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 50, output_dir, args, thresholds)
+            pattern_testing_line(X_train, X_test, y_train, y_test, columns_to_bin, num_bins, ratios, pattern1, pattern2, pattern3, 50, output_dir, args, thresholds, 0.5)
         else:
             print("")
             print("Dataset is not provided, please provided dataset.")
